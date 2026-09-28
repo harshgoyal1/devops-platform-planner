@@ -4,193 +4,341 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>DevOps Platform Planner</title>
-<meta name="description" content="Pick the tools you run today and the platforms you are considering, mark the features you use, and get a feature-by-feature comparison and recommendation.">
+<meta name="description" content="Pick the tools you run today and the on-prem platforms you are considering, mark the features you use, and get a feature-by-feature comparison and recommendation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=JetBrains+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600;700&display=swap">
 <style>
 :root{
-  --ground:#f3f5f7; --panel:#ffffff; --ink:#18222e; --ink-2:#4a5767; --ink-3:#7a8697;
-  --line:#dde2e8; --line-2:#c9d0d9; --accent:#1f5f8b; --accent-ink:#ffffff; --accent-soft:#e3eef6;
-  --ok:#1d7a46; --ok-soft:#dcf1e4; --warn:#9a6a00; --warn-soft:#fbefcf; --bad:#b3261e; --bad-soft:#f9dedc;
-  --addon:#7a4a9c; --addon-soft:#efe4f6;
-  --display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
-  --body:"IBM Plex Sans",-apple-system,"Segoe UI",Arial,sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --ground:#f3f5f9; --panel:#ffffff; --panel-2:#f8f9fc; --ink:#0d1b2a; --ink-2:#44546a; --ink-3:#7b8799;
+  --line:#e2e6ee; --line-2:#cdd4df;
+  --accent:#2743d6; --accent-2:#1b31a8; --accent-ink:#ffffff; --accent-soft:#e8ecfd; --accent-mid:#9fb0f2;
+  --deadline:#c2570c; --deadline-soft:#fdeedd;
+  --ok:#1a7f4b; --ok-soft:#dff3e7; --warn:#946200; --warn-soft:#fbf0d2; --bad:#b42318; --bad-soft:#fbe3e1;
+  --addon:#6d4bb0; --addon-soft:#ece6f8;
+  --shadow:0 1px 2px rgba(13,27,42,.06),0 4px 16px rgba(13,27,42,.06);
+  --display:"Bricolage Grotesque","Avenir Next",Avenir,"Segoe UI",sans-serif;
+  --body:"Public Sans",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   color-scheme:dark;
-  --ground:#10161d; --panel:#172029; --ink:#e6ebf0; --ink-2:#aab5c2; --ink-3:#7e8a98;
-  --line:#26313d; --line-2:#344252; --accent:#6aaede; --accent-ink:#0b1824; --accent-soft:#1a3347;
-  --ok:#6fcf97; --ok-soft:#173a28; --warn:#e6b84a; --warn-soft:#3a2f12; --bad:#f28b82; --bad-soft:#3d1c1a;
-  --addon:#c79be6; --addon-soft:#33243f;
+  --ground:#0b1220; --panel:#121b2c; --panel-2:#0f1726; --ink:#e8edf5; --ink-2:#a9b5c7; --ink-3:#7a879b;
+  --line:#1f2a3d; --line-2:#2c3a52;
+  --accent:#7d95ff; --accent-2:#a3b4ff; --accent-ink:#0b1220; --accent-soft:#1a2750; --accent-mid:#3b4f9a;
+  --deadline:#f59f4c; --deadline-soft:#35220f;
+  --ok:#5fd394; --ok-soft:#12321f; --warn:#e8bb4f; --warn-soft:#342a10; --bad:#ff8a80; --bad-soft:#3a1716;
+  --addon:#b89cf0; --addon-soft:#2a2143;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
 }}
 :root[data-theme="dark"]{
   color-scheme:dark;
-  --ground:#10161d; --panel:#172029; --ink:#e6ebf0; --ink-2:#aab5c2; --ink-3:#7e8a98;
-  --line:#26313d; --line-2:#344252; --accent:#6aaede; --accent-ink:#0b1824; --accent-soft:#1a3347;
-  --ok:#6fcf97; --ok-soft:#173a28; --warn:#e6b84a; --warn-soft:#3a2f12; --bad:#f28b82; --bad-soft:#3d1c1a;
-  --addon:#c79be6; --addon-soft:#33243f;
+  --ground:#0b1220; --panel:#121b2c; --panel-2:#0f1726; --ink:#e8edf5; --ink-2:#a9b5c7; --ink-3:#7a879b;
+  --line:#1f2a3d; --line-2:#2c3a52;
+  --accent:#7d95ff; --accent-2:#a3b4ff; --accent-ink:#0b1220; --accent-soft:#1a2750; --accent-mid:#3b4f9a;
+  --deadline:#f59f4c; --deadline-soft:#35220f;
+  --ok:#5fd394; --ok-soft:#12321f; --warn:#e8bb4f; --warn-soft:#342a10; --bad:#ff8a80; --bad-soft:#3a1716;
+  --addon:#b89cf0; --addon-soft:#2a2143;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
 }
 *{box-sizing:border-box}
-body{background:var(--ground);color:var(--ink);font:15px/1.5 var(--body);padding-inline:16px;padding-block:0 48px}
-.wrap{max-width:1240px;margin:0 auto}
-h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
-header.top{padding-block:28px 20px;display:grid;gap:10px;border-bottom:1px solid var(--line)}
-.eyebrow{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
-h1{font-size:clamp(28px,4vw,40px);font-weight:700;letter-spacing:-.01em}
-.lede{max-width:68ch;color:var(--ink-2);margin:0}
-.notice{display:flex;gap:10px;align-items:flex-start;background:var(--warn-soft);color:var(--ink);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);border-radius:6px;padding:10px 12px;font-size:13.5px;max-width:900px}
-.notice b{color:var(--warn)}
-.step{display:flex;align-items:baseline;gap:10px;margin:0 0 12px}
-.step .n{font:600 12px/1 var(--mono);color:var(--accent)}
-.step h2{font-size:21px;font-weight:600}
-section{margin-bottom:32px}
-.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
-.tool{position:relative}
-.tool input{position:absolute;opacity:0;pointer-events:none}
-.tool label{display:grid;gap:2px;padding:12px 14px;border:1px solid var(--line-2);border-radius:6px;background:var(--panel);cursor:pointer;height:100%}
-.tool label .t{font-weight:600}
-.tool label .s{font-size:12.5px;color:var(--ink-3)}
-.tool input:checked+label{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
-.tool input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
-.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px}
-.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink-2)}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--ground);color:var(--ink);font:15px/1.55 var(--body);padding-inline:16px;padding-block:0 120px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.015em}
+a{color:var(--accent)}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* top bar */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;margin-inline:-16px;padding-inline:16px;background:color-mix(in srgb,var(--ground) 86%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;gap:16px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font:700 16px/1 var(--display);text-decoration:none;color:var(--ink);white-space:nowrap}
+.brand .mark{width:26px;height:26px;border-radius:7px;background:var(--accent);display:grid;place-items:center}
+.brand .mark svg{display:block}
+.stepper{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.stepper a{display:flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;text-decoration:none;color:var(--ink-2);font-size:13.5px;font-weight:500;white-space:nowrap}
+.stepper a:hover{background:var(--panel)}
+.stepper .dot{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font:600 11px/1 var(--mono);background:var(--line);color:var(--ink-2)}
+.stepper a.done .dot{background:var(--accent);color:var(--accent-ink)}
+.stepper .ct{font:500 11.5px/1 var(--mono);color:var(--ink-3)}
+@media (max-width:760px){.stepper .lbl{display:none}.brand .txt{display:none}}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px;align-items:center;padding-block:44px 36px}
+@media (max-width:880px){.hero{grid-template-columns:minmax(0,1fr);padding-block:28px 24px}}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:6px 11px;border-radius:999px}
+.hero h1{font-size:clamp(32px,5vw,52px);line-height:1.04;font-weight:700;margin:16px 0 14px}
+.hero p{font-size:17px;color:var(--ink-2);max-width:56ch;margin:0}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:11px 18px;font-weight:600;font-size:14.5px;text-decoration:none;border:1px solid var(--line-2);background:var(--panel);color:var(--ink);cursor:pointer;transition:transform .12s,background .15s,border-color .15s}
+.btn:hover{border-color:var(--accent)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.btn.small{padding:7px 12px;font-size:13px;border-radius:8px}
+.clock{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.clock .top{padding:20px 22px;background:var(--deadline-soft);border-bottom:1px solid var(--line)}
+.clock .top .l{font-size:13px;font-weight:600;color:var(--deadline)}
+.clock .days{font:600 clamp(40px,6vw,56px)/1 var(--mono);color:var(--ink);margin-top:8px;letter-spacing:-.03em}
+.clock .days small{font:500 15px var(--body);color:var(--ink-2);letter-spacing:0;margin-left:6px}
+.clock .sub{font-size:13.5px;color:var(--ink-2);margin-top:6px}
+.clock .stats{display:grid;grid-template-columns:repeat(3,1fr)}
+.clock .stats div{padding:14px 16px;border-left:1px solid var(--line)}
+.clock .stats div:first-child{border-left:0}
+.clock .stats b{display:block;font:600 22px/1.1 var(--mono)}
+.clock .stats span{font-size:12.5px;color:var(--ink-3)}
+
+/* steps */
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px;margin-bottom:22px;box-shadow:var(--shadow)}
+@media (max-width:640px){.step{padding:18px;border-radius:14px}}
+.step-h{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
+.step-h .t{display:flex;gap:14px;align-items:flex-start}
+.step-h .n{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font:600 14px/1 var(--mono);background:var(--accent-soft);color:var(--accent)}
+.step-h h2{font-size:22px;font-weight:650}
+.step-h p{margin:3px 0 0;color:var(--ink-2);font-size:14px}
+.chipcount{font:500 12.5px/1 var(--mono);color:var(--ink-2);background:var(--panel-2);border:1px solid var(--line);padding:7px 10px;border-radius:999px}
+
+.famlabel{font-size:13px;font-weight:600;color:var(--ink-3);margin:18px 0 10px}
+.famlabel:first-child{margin-top:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.pick{position:relative}
+.pick input{position:absolute;opacity:0;pointer-events:none}
+.pick label{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;height:100%;padding:13px 14px;border:1px solid var(--line-2);border-radius:12px;background:var(--panel);cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}
+.pick label:hover{border-color:var(--accent-mid)}
+.pick .nm{font-weight:650;font-size:14.5px}
+.pick .sb{grid-column:1;font-size:12.5px;color:var(--ink-3)}
+.pick .ck{grid-row:1/3;grid-column:2;width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line-2);display:grid;place-items:center;align-self:start;transition:all .15s}
+.pick .ck svg{opacity:0}
+.pick .badge{grid-column:1/-1;justify-self:start;margin-top:8px}
+.pick input:checked+label{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
+.pick input:checked+label .ck{background:var(--accent);border-color:var(--accent)}
+.pick input:checked+label .ck svg{opacity:1}
+.pick input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
+.pick.base label{border-style:dashed}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 8px;border-radius:6px;line-height:1.2}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.badge.eol{background:var(--deadline-soft);color:var(--deadline)}
+.badge.live{background:var(--panel-2);color:var(--ink-3);border:1px solid var(--line)}
+.badge.keep{background:var(--ok-soft);color:var(--ok)}
+
+/* features */
+.tools-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.search{position:relative;flex:1 1 260px;max-width:420px}
+.search input{width:100%;padding:10px 12px 10px 36px;border:1px solid var(--line-2);border-radius:10px;background:var(--panel-2)}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink-3)}
+.seg{display:inline-flex;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;padding:6px 11px;border-radius:7px;font-size:13px;font-weight:500;color:var(--ink-2);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink-2);margin-bottom:14px}
 .legend span{display:inline-flex;align-items:center;gap:6px}
-button{font:500 13px/1 var(--body);color:var(--ink);background:var(--panel);border:1px solid var(--line-2);border-radius:5px;padding:8px 12px;cursor:pointer}
-button:hover{border-color:var(--accent)}
-button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.group{background:var(--panel);border:1px solid var(--line);border-radius:8px;margin-bottom:18px;overflow:hidden}
-.group>header{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:space-between;align-items:baseline;padding:14px 16px;border-bottom:1px solid var(--line)}
-.group>header h3{font-size:18px;font-weight:600}
-.group>header .oss{font-size:12.5px;color:var(--ink-3)}
-.cat{font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding:14px 16px 6px}
-.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 18px;padding:10px 16px;border-top:1px solid var(--line)}
-.cat+.row{border-top:0}
-.row .f{font-weight:600;font-size:14.5px}
-.row .d{font-size:13.5px;color:var(--ink-2);max-width:70ch}
-.row .note{font-size:12.5px;color:var(--ink-3);margin-top:4px}
-.layout{padding-top:24px;max-width:1040px}
-.row .ratings{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.row.unused .ratings,.row.unused .note{opacity:.55}
-.pill{display:inline-flex;align-items:center;gap:5px;font:500 11.5px/1 var(--mono);padding:4px 7px;border-radius:4px;white-space:nowrap}
-.pill i{font-style:normal;color:var(--ink-3)}
+.pill{display:inline-flex;align-items:center;gap:6px;font:500 11.5px/1 var(--mono);padding:5px 8px;border-radius:6px;white-space:nowrap}
+.pill i{font-style:normal;opacity:.75;font-family:var(--body);font-weight:500}
 .r-N{background:var(--ok-soft);color:var(--ok)} .r-P{background:var(--warn-soft);color:var(--warn)}
 .r-A{background:var(--addon-soft);color:var(--addon)} .r-X{background:var(--bad-soft);color:var(--bad)}
-.imp{display:inline-flex;border:1px solid var(--line-2);border-radius:5px;overflow:hidden;align-self:start}
+.hint{font-size:13px;color:var(--accent);background:var(--accent-soft);padding:10px 12px;border-radius:10px;margin-bottom:14px}
+.empty{padding:28px;border:1.5px dashed var(--line-2);border-radius:12px;color:var(--ink-3);text-align:center}
+
+details.grp{border:1px solid var(--line);border-radius:14px;margin-bottom:12px;background:var(--panel);overflow:hidden}
+details.grp>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:center;padding:16px 18px}
+details.grp>summary::-webkit-details-marker{display:none}
+details.grp>summary:hover{background:var(--panel-2)}
+.grp .gt{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.grp .gt h3{font-size:17.5px;font-weight:650}
+.grp .prog{display:flex;align-items:center;gap:10px;font:500 12.5px/1 var(--mono);color:var(--ink-2)}
+.grp .prog .tr{width:90px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.grp .prog .tr i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .25s}
+.grp .chev{transition:transform .2s;color:var(--ink-3)}
+details.grp[open] .chev{transform:rotate(180deg)}
+.grp .body{border-top:1px solid var(--line)}
+.cat{font-size:12.5px;font-weight:650;color:var(--ink-3);padding:14px 18px 4px;background:var(--panel-2);border-top:1px solid var(--line)}
+.cat:first-child{border-top:0}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 22px;padding:14px 18px;border-top:1px solid var(--line);transition:background .15s}
+.cat+.row{border-top:0}
+.row.rated{background:color-mix(in srgb,var(--accent-soft) 35%,transparent)}
+.row .f{font-weight:650;font-size:14.5px}
+.row .d{font-size:13.5px;color:var(--ink-2);max-width:68ch;margin-top:2px}
+.row .note{font-size:12.5px;color:var(--ink-3);margin-top:6px;display:flex;gap:6px}
+.row .rt{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+@media (max-width:700px){.row{grid-template-columns:minmax(0,1fr)}}
+.imp{display:inline-flex;align-self:start;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:3px}
 .imp input{position:absolute;opacity:0;pointer-events:none}
-.imp label{font:500 12px/1 var(--body);padding:7px 9px;cursor:pointer;color:var(--ink-2);border-left:1px solid var(--line-2);white-space:nowrap}
-.imp label:first-of-type{border-left:0}
-.imp input:checked+label{background:var(--accent);color:var(--accent-ink)}
-.imp input:focus-visible+label{outline:2px solid var(--accent);outline-offset:-2px}
-@media (max-width:640px){.row{grid-template-columns:minmax(0,1fr)}}
-.empty{padding:24px;border:1px dashed var(--line-2);border-radius:8px;color:var(--ink-3);text-align:center}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px}
-.card+.card{margin-top:14px}
-.verdict .label{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
-.verdict h2{font-size:26px;margin:8px 0 6px}
-.verdict p{margin:0;color:var(--ink-2);font-size:14px}
-.bars{display:grid;gap:12px;margin-top:16px}
-.bar{display:grid;gap:4px}
-.bar .top{display:flex;justify-content:space-between;gap:8px;font-size:14px}
-.bar .top b{font-family:var(--mono);font-variant-numeric:tabular-nums}
-.bar .track{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
-.bar .fill{height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
-.bar .meta{font-size:12px;color:var(--ink-3)}
-.bar.best .fill{background:var(--ok)} .bar.base .fill{background:var(--ink-3)}
-.bar .meta .g{color:var(--bad);font-weight:600}
-.bars{display:grid;gap:14px;margin-top:18px}
-.results{display:grid;gap:16px}
-.card h3{font-size:17px;margin-bottom:12px}
+.imp label{font-size:12.5px;font-weight:600;padding:7px 10px;border-radius:7px;cursor:pointer;color:var(--ink-3);white-space:nowrap;transition:background .12s,color .12s}
+.imp label:hover{color:var(--ink)}
+.imp input:checked+label{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.imp input[value="1"]:checked+label{background:var(--accent-soft);color:var(--accent)}
+.imp input[value="2"]:checked+label{background:var(--accent-mid);color:var(--accent-ink)}
+.imp input[value="3"]:checked+label{background:var(--accent);color:var(--accent-ink)}
+.imp input:focus-visible+label{outline:2px solid var(--accent);outline-offset:1px}
+
+/* dock */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));pointer-events:none}
+.dock .in{pointer-events:auto;max-width:760px;margin:0 auto;display:flex;align-items:center;gap:14px;justify-content:space-between;background:var(--ink);color:var(--ground);border-radius:14px;padding:10px 10px 10px 18px;box-shadow:0 10px 30px rgba(13,27,42,.25)}
+.dock .sum{font-size:13.5px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.dock .sum b{font-family:var(--mono)}
+.dock .btn.primary{background:var(--accent);border-color:var(--accent)}
+.dock .msg{font-size:12.5px;opacity:.8}
+:root[data-theme="dark"] .dock .in{background:var(--panel);color:var(--ink);border:1px solid var(--line-2)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .dock .in{background:var(--panel);color:var(--ink);border:1px solid var(--line-2)}}
+
+/* results */
+.results{display:grid;gap:18px}
+.stale{background:var(--warn-soft);color:var(--ink);border-radius:12px;padding:12px 14px;font-size:14px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.verdict{display:grid;grid-template-columns:auto minmax(0,1fr);gap:26px;align-items:center;padding:24px;border-radius:16px;background:var(--panel-2);border:1px solid var(--line)}
+@media (max-width:640px){.verdict{grid-template-columns:minmax(0,1fr)}}
+.ring{position:relative;width:148px;height:148px}
+.ring svg{transform:rotate(-90deg)}
+.ring .v{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ring .v b{font:600 34px/1 var(--mono);letter-spacing:-.03em}
+.ring .v span{display:block;font-size:12px;color:var(--ink-3);margin-top:4px}
+.verdict .l{font-size:13px;font-weight:600;color:var(--ok)}
+.verdict h3{font-size:clamp(24px,3.4vw,32px);font-weight:700;margin:6px 0 8px}
+.verdict p{margin:0;color:var(--ink-2);max-width:62ch}
+.mixline{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.mixline span{font-size:13px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.mixline b{font-weight:650}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:880px){.cols{grid-template-columns:minmax(0,1fr)}}
+.box{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--panel)}
+.box h3{font-size:17px;font-weight:650;margin-bottom:4px}
+.box .sub{font-size:13px;color:var(--ink-3);margin:0 0 14px}
+.bars{display:grid;gap:14px}
+.bar .tp{display:flex;justify-content:space-between;gap:10px;font-size:14px;font-weight:600}
+.bar .tr{height:10px;border-radius:5px;background:var(--line);overflow:hidden;margin-top:6px}
+.bar .tr i{display:block;height:100%;border-radius:5px;background:var(--accent-mid);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.bar.best .tr i{background:var(--ok)}
+.bar.base .tr i{background:repeating-linear-gradient(45deg,var(--line-2) 0 6px,transparent 6px 10px)}
+.bar .mt{font-size:12.5px;color:var(--ink-3);margin-top:5px}
+.bar .mt .g{color:var(--bad);font-weight:600}
 .scroll{overflow-x:auto}
-table.grid{border-collapse:collapse;font-size:13.5px;width:100%;min-width:520px}
-table.grid th{font:500 11px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:0 10px 8px 0;vertical-align:bottom}
-table.grid td{padding:9px 10px 9px 0;border-top:1px solid var(--line);vertical-align:top}
-table.grid td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
-table.grid tr.total td{font-weight:600;border-top:2px solid var(--line-2)}
-td.win{color:var(--ok);font-weight:600}
-details{border-top:1px solid var(--line);padding-block:10px}
-details:first-of-type{border-top:0}
-summary{cursor:pointer;font-weight:600}
-summary span{font-weight:400;color:var(--ink-3);font-size:13px}
-ul.gaps{margin:10px 0 0;padding-left:18px;font-size:13.5px;color:var(--ink-2);display:grid;gap:6px}
-ul.gaps b{color:var(--ink)}
-.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.muted{color:var(--ink-3);font-size:12.5px}
-.sample{font-size:12.5px;color:var(--accent);margin-bottom:12px}
-.stale{background:var(--warn-soft);color:var(--ink);border-radius:6px;padding:10px 12px;font-size:13.5px}
-.tool label .dc{font:500 11px/1.3 var(--mono);color:var(--bad);margin-top:4px}
-.tool label .dc.ok{color:var(--ink-3)}
-#tools{display:grid;gap:6px}
-#tools .cat{padding:8px 0 8px}
-footer a{color:var(--accent)}
-.credit{margin:12px 0 0;font-size:13.5px;color:var(--ink-2)}
-footer{margin-top:32px;border-top:1px solid var(--line);padding-top:16px;font-size:12.5px;color:var(--ink-3);max-width:90ch}
-textarea#copyfallback{width:100%;height:160px;margin-top:10px;font:12px/1.4 var(--mono);background:var(--ground);color:var(--ink);border:1px solid var(--line-2);border-radius:5px;padding:8px}
-@media (prefers-reduced-motion:reduce){.bar .fill{transition:none}}
+table.hm{border-collapse:separate;border-spacing:4px;width:100%;min-width:560px;font-size:13.5px}
+table.hm th{font-size:12px;font-weight:600;color:var(--ink-3);text-align:center;padding:4px 6px;vertical-align:bottom}
+table.hm th:first-child,table.hm td:first-child{text-align:left}
+table.hm td{padding:10px 8px;border-radius:8px;text-align:center}
+table.hm td:first-child{font-weight:600;padding-left:2px}
+table.hm td.c{font:600 14px/1 var(--mono)}
+table.hm td.c small{display:block;font:500 10.5px/1.2 var(--body);margin-top:4px;opacity:.85}
+.h-hi{background:var(--ok-soft);color:var(--ok)} .h-mid{background:var(--warn-soft);color:var(--warn)} .h-lo{background:var(--bad-soft);color:var(--bad)} .h-na{background:var(--panel-2);color:var(--ink-3)}
+table.hm td.c.win{box-shadow:inset 0 0 0 2px currentColor}
+table.hm tr.total td{border-top:0}
+table.hm tr.total td:first-child{color:var(--ink)}
+table.hm td.best{font-size:13px;font-weight:600;text-align:left}
+table.hm td.best small{display:block;font-weight:500;color:var(--ok)}
+details.gap{border-top:1px solid var(--line);padding:12px 0}
+details.gap:first-of-type{border-top:0;padding-top:0}
+details.gap summary{cursor:pointer;font-weight:650;display:flex;justify-content:space-between;gap:10px}
+details.gap summary span{font:500 12.5px/1.6 var(--mono);color:var(--ink-3)}
+ul.gl{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+ul.gl li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;font-size:13.5px;align-items:start}
+ul.gl li .m{color:var(--ink-3);font-size:12.5px}
+table.map{border-collapse:collapse;width:100%;min-width:620px;font-size:13.5px}
+table.map th{font-size:12px;font-weight:600;color:var(--ink-3);text-align:left;padding:0 10px 10px 0;white-space:nowrap}
+table.map td{padding:10px 10px 10px 0;border-top:1px solid var(--line);vertical-align:top}
+table.map td .m{display:block;font-size:12.5px;color:var(--ink-3)}
+.impt{font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.impt.i3{background:var(--accent);color:var(--accent-ink)} .impt.i2{background:var(--accent-mid);color:var(--accent-ink)} .impt.i1{background:var(--accent-soft);color:var(--accent)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.muted{color:var(--ink-3);font-size:13px}
+textarea#copyfallback{width:100%;height:170px;font:12px/1.45 var(--mono);background:var(--panel-2);color:var(--ink);border:1px solid var(--line-2);border-radius:10px;padding:10px}
+.fade{animation:fade .45s ease both}
+@keyframes fade{from{opacity:.001;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+footer{padding-block:18px 8px;font-size:13px;color:var(--ink-3);display:grid;gap:10px}
+footer .credit{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between;padding:16px 18px;background:var(--panel);border:1px solid var(--line);border-radius:14px;color:var(--ink-2);font-size:14px}
+footer .credit b{color:var(--ink)}
+footer p{margin:0;max-width:95ch}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-<header class="top">
-  <div class="eyebrow">On-prem migration assessment</div>
-  <h1>DevOps Platform Planner</h1>
-  <p class="lede">Choose the tools you run today (Atlassian, CI/CD, ALM and test, artifacts, ITSM, wikis) and the platforms you're considering, then mark how much each feature matters. Run the analysis to compare the platforms feature by feature and get a recommendation.</p>
-  <div class="notice"><b>Why now:</b><span>Atlassian Data Center goes read-only on 28 Mar 2029 (Bitbucket excepted), and new Data Center sales stopped on 30 Mar 2026. Older TFS versions are out of support. Other tools here are still supported. For those, the question is whether to consolidate or keep them and integrate.</span></div>
+<div class="topbar"><div class="wrap">
+  <a class="brand" href="#top"><span class="mark"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 10.5 5.5 7 8 9.5 12 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="txt">DevOps Platform Planner</span></a>
+  <nav class="stepper" aria-label="Steps">
+    <a href="#s1" id="st1"><span class="dot">1</span><span class="lbl">Tools</span><span class="ct" id="c1"></span></a>
+    <a href="#s2" id="st2"><span class="dot">2</span><span class="lbl">Platforms</span><span class="ct" id="c2"></span></a>
+    <a href="#s3" id="st3"><span class="dot">3</span><span class="lbl">Features</span><span class="ct" id="c3"></span></a>
+    <a href="#s4" id="st4"><span class="dot">4</span><span class="lbl">Results</span></a>
+  </nav>
+</div></div>
+
+<div class="wrap" id="top">
+<header class="hero">
+  <div>
+    <span class="kicker">On-prem migration assessment</span>
+    <h1>Find the right on-prem home for every tool you run.</h1>
+    <p>Pick your current tools and the platforms you're weighing up. Mark the features your teams depend on, then compare Azure DevOps Server, GitHub Enterprise Server, GitLab Self-Managed and open source feature by feature.</p>
+    <div class="cta"><a class="btn primary" href="#s1">Start the assessment</a><a class="btn" href="#demo">See a sample analysis</a></div>
+  </div>
+  <div class="clock" aria-label="Atlassian Data Center deadline">
+    <div class="top">
+      <div class="l">Atlassian Data Center goes read-only</div>
+      <div class="days"><span id="days">–</span><small>days left</small></div>
+      <div class="sub">28 March 2029. New Data Center sales stopped on 30 March 2026. Bitbucket is the only exception.</div>
+    </div>
+    <div class="stats"><div><b id="n-tools">20</b><span>source tools</span></div><div><b id="n-feats">175</b><span>features</span></div><div><b>4</b><span>platforms</span></div></div>
+  </div>
 </header>
 
-<div class="layout">
-  <section>
-    <div class="step"><span class="n">STEP 1</span><h2>Which tools do you run today?</h2></div>
-    <div id="tools"></div>
-  </section>
+<section class="step" id="s1">
+  <div class="step-h"><div class="t"><span class="n">1</span><div><h2>Which tools do you run today?</h2><p>Select every tool you want to replace or re-evaluate.</p></div></div><span class="chipcount" id="cnt-tools"></span></div>
+  <div id="tools"></div>
+</section>
 
-  <section>
-    <div class="step"><span class="n">STEP 2</span><h2>Which platforms do you want to compare?</h2></div>
-    <div class="tools" id="targets"></div>
-  </section>
+<section class="step" id="s2">
+  <div class="step-h"><div class="t"><span class="n">2</span><div><h2>Which platforms do you want to compare?</h2><p>Pick at least one destination. Your current tools can be added as a baseline.</p></div></div><span class="chipcount" id="cnt-targets"></span></div>
+  <div class="cards" id="targets"></div>
+</section>
 
-  <section>
-    <div class="step"><span class="n">STEP 3</span><h2>Which features do you use, and how much do they matter?</h2></div>
-    <div class="toolbar">
-      <div class="legend">
-        <span><span class="pill r-N">Native</span> built in</span>
-        <span><span class="pill r-P">Partial</span> limited or workaround</span>
-        <span><span class="pill r-A">Add-on</span> extra product or licence</span>
-        <span><span class="pill r-X">None</span> not available</span>
-      </div>
-      <div class="actions"><button id="reset" type="button">Clear answers</button><button id="example" type="button">Load example</button></div>
+<section class="step" id="s3">
+  <div class="step-h"><div class="t"><span class="n">3</span><div><h2>Which features do you use, and how much do they matter?</h2><p>Leave a feature on “Not used” if your teams don't rely on it.</p></div></div><span class="chipcount" id="cnt-feats"></span></div>
+  <div class="tools-row">
+    <label class="search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="m11 11 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><input id="q" type="search" placeholder="Search features, e.g. time tracking" aria-label="Search features"></label>
+    <div class="seg" role="group" aria-label="Show"><button type="button" data-f="all" aria-pressed="true">All</button><button type="button" data-f="rated" aria-pressed="false">Rated</button><button type="button" data-f="open" aria-pressed="false">Not rated</button></div>
+    <div class="actions"><button class="btn small" id="reset" type="button">Clear answers</button><button class="btn small" id="example" type="button">Load example</button></div>
+  </div>
+  <div class="legend">
+    <span><span class="pill r-N">Native</span>built in</span>
+    <span><span class="pill r-P">Partial</span>limited or workaround</span>
+    <span><span class="pill r-A">Add-on</span>extra product or licence</span>
+    <span><span class="pill r-X">None</span>not available</span>
+  </div>
+  <div id="features"></div>
+</section>
+
+<section class="step" id="s4">
+  <div class="step-h"><div class="t"><span class="n">4</span><div><h2>Results</h2><p>Nothing is recommended until you run the analysis.</p></div></div></div>
+  <div id="pre" class="empty">Finish steps 1–3, then choose <b>Run analysis</b> in the bar at the bottom of the screen.</div>
+  <div class="results" id="results" hidden>
+    <div id="stale" class="stale" hidden><span>You changed your answers since this analysis.</span><button class="btn small" type="button" id="rerun">Run again</button></div>
+    <div class="verdict fade" id="verdict"></div>
+    <div class="cols">
+      <div class="box"><h3>Overall fit</h3><p class="sub">Weighted by importance. Must = 3, Should = 2, Nice = 1.</p><div class="bars" id="bars"></div></div>
+      <div class="box"><h3>Must-have gaps</h3><p class="sub">Must-haves that are missing or only partly covered.</p><div id="gaps"></div></div>
     </div>
-    <div id="features"></div>
-  </section>
+    <div class="box"><h3>Fit by tool</h3><p class="sub">Each tool's score on each platform. The outlined cell is the best fit.</p><div class="scroll" id="matrix"></div></div>
+    <div class="box"><h3>Feature mapping</h3><p class="sub">Every feature you marked, and how each platform covers it.</p><div class="scroll" id="mapping"></div></div>
+    <div class="actions"><button class="btn primary" id="copy" type="button">Copy summary</button><span id="copymsg" class="muted" role="status"></span></div>
+  </div>
+</section>
 
-  <section>
-    <div class="step"><span class="n">STEP 4</span><h2>Analyse and compare</h2></div>
-    <div class="actions"><button class="primary" id="run" type="button">Run analysis</button><span class="muted" id="runmsg"></span></div>
-    <div class="results" id="results" hidden>
-      <div id="stale" class="stale" hidden>You changed your answers since this analysis. Run it again to update the results.</div>
-      <div class="card verdict" id="verdict"></div>
-      <div class="card"><h3>Fit by product</h3><div class="scroll" id="matrix"></div></div>
-      <div class="card"><h3>Must-have gaps per platform</h3><div id="gaps"></div></div>
-      <div class="card"><h3>Feature mapping</h3><p class="muted">Every feature you marked, and how each platform covers it.</p><div class="scroll" id="mapping"></div></div>
-      <div class="actions"><button class="primary" id="copy" type="button">Copy summary</button><span id="copymsg" class="muted" role="status"></span></div>
-    </div>
-  </section>
+<footer>
+  <div class="credit"><span>Built by <b>Harsh Goyal</b>. Planning a move, or worried about data residency? Message me on LinkedIn.</span><a class="btn small" href="https://harshgoyal1.github.io/">View portfolio</a></div>
+  <p>Ratings reflect GitHub Enterprise Server 3.20, current Azure DevOps Server, GitLab Self-Managed Premium (Ultimate-only features count as Add-on) and the named open-source products (free editions), without third-party plugins unless marked Add-on. “Keep current tools” is a baseline: it scores full marks and is never recommended. Tools that are still supported can also stay and be integrated. Ratings are a general assessment, not vendor-certified. Check Must-have items in a proof of concept. Scoring: Native counts 100%, Partial or Add-on 50%, None 0%. Your answers stay in your browser.</p>
+</footer>
+</div>
 
-  <footer>
-    Ratings reflect GitHub Enterprise Server 3.20, current Azure DevOps Server, GitLab Self-Managed Premium (Ultimate-only features count as Add-on) and the named open-source products (free editions), without third-party plugins unless marked Add-on. "Keep current tools" is your baseline: it scores full marks and is never recommended as a destination. Tools that are still supported can also stay and be integrated. Ratings are a general assessment, not vendor-certified. Check your Must-have items in a proof of concept. Scoring: Must = 3, Should = 2, Nice = 1; Native counts 100%, Partial or Add-on 50%, None 0%.
-    <p class="credit">Built by <a href="https://harshgoyal1.github.io/">Harsh Goyal</a>. Planning a move or worried about data residency? Message me on LinkedIn. <a href="#demo">See a sample analysis</a>.</p>
-  </footer>
-</div>
-</div>
+<div class="dock" id="dock"><div class="in">
+  <div class="sum"><span><b id="d-tools">0</b> tools</span><span><b id="d-targets">0</b> platforms</span><span><b id="d-feats">0</b> features rated</span><span class="msg" id="runmsg"></span></div>
+  <button class="btn primary" id="run" type="button">Run analysis</button>
+</div></div>
 
 <script>
 const TARGETS = [
   {k:"ado", name:"Azure DevOps Server", short:"Azure DevOps", sub:"Microsoft, on-prem", i:0},
-  {k:"gh",  name:"GitHub Enterprise Server", short:"GitHub ES", sub:"GitHub, on-prem (3.20)", i:1},
-  {k:"gl",  name:"GitLab Self-Managed", short:"GitLab", sub:"Premium tier; Ultimate-only features count as Add-on", i:2},
+  {k:"gh",  name:"GitHub Enterprise Server", short:"GitHub ES", sub:"GitHub, on-prem, version 3.20", i:1},
+  {k:"gl",  name:"GitLab Self-Managed", short:"GitLab", sub:"Premium tier. Ultimate-only features count as Add-on", i:2},
   {k:"oss", name:"Open-source stack", short:"Open source", sub:"OpenProject, XWiki, Gitea, Jenkins, Kiwi TCMS…", i:3},
   {k:"dc",  name:"Keep current tools", short:"Current", sub:"Baseline only. Scores what you have today", i:null},
 ];
@@ -415,63 +563,99 @@ const TOOLS = [
 ["wiki7", "Migration", "Import from existing wiki", "Bring existing pages across.", "PPPP", "MediaWiki and SharePoint exports usually need conversion to Markdown."]
 ]}
 ];
-
 const EXAMPLE = {tools:["jira","confluence","jenkins"], targets:["ado","gh","gl","oss"], imp:{jenkins1:3,jenkins2:3,jenkins6:3,jenkins7:3,jenkins8:2,jenkins10:2,j1:3,j2:3,j4:3,j10:3,j11:2,j14:3,j15:2,j18:2,j20:2,j22:3,j23:2,j26:1,j28:3,j29:2,j33:3,c1:3,c2:2,c5:1,c8:3,c10:3,c12:2}};
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pct = x => x==null ? "–" : Math.round(x*100)+"%";
+const rating = (f,k) => k==="dc" ? "N" : f[4][TK[k].i];
+const tname = (k,t) => k==="oss" && t ? t.oss : TK[k].name;
+const heat = x => x==null ? "h-na" : x>=.8 ? "h-hi" : x>=.6 ? "h-mid" : "h-lo";
+const CHECK = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="m2.5 6.2 2.3 2.3 4.7-5" stroke="var(--accent-ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const CHEV = `<svg class="chev" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="m5 7 4 4 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 function lsGet(){ try{ return localStorage.getItem("dpp-state"); }catch(e){ return null; } }
 function load(){ try{ const s = lsGet(); const o = s && JSON.parse(s); return o && o.targets ? o : null; }catch(e){ return null; } }
 let state = load() || structuredClone(EXAMPLE);
 let isExample = !load();
-let analysed = false, summary = "";
+let analysed = false, summary = "", filter = "all", query = "";
+const openGroups = new Set([state.tools[0]]);
 function save(){ isExample = false; try{ localStorage.setItem("dpp-state", JSON.stringify(state)); }catch(e){} }
-function changed(){ save(); if(analysed) $("#stale").hidden = false; }
+function changed(){ save(); counts(); if(analysed) $("#stale").hidden = false; }
 
-const $ = s => document.querySelector(s);
-const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const rating = (f,k) => k==="dc" ? "N" : f[4][TK[k].i];
-const tname = (k,t) => k==="oss" && t ? `${t.oss} (open source)` : TK[k].name;
-const pct = x => x==null ? "–" : Math.round(x*100)+"%";
+// countdown
+const days = Math.max(0, Math.ceil((new Date("2029-03-28T00:00:00") - new Date())/864e5));
+$("#days").textContent = days.toLocaleString();
+$("#n-tools").textContent = TOOLS.length;
+$("#n-feats").textContent = TOOLS.reduce((n,t)=>n+t.feats.length,0);
 
-function cards(el, list, chosen, key){
-  $(el).innerHTML = list.map(t => `<div class="tool"><input type="checkbox" id="${key}-${t.id||t.k}" value="${t.id||t.k}" ${chosen.includes(t.id||t.k)?"checked":""}>
-    <label for="${key}-${t.id||t.k}"><span class="t">${t.name}</span><span class="s">${esc(t.sub)}</span>${t.st?`<span class="dc ${t.eol?"":"ok"}">${esc(t.st)}</span>`:""}</label></div>`).join("");
+function counts(){
+  const nt = state.tools.length, ng = state.targets.filter(k=>k!=="dc").length;
+  const valid = new Set(TOOLS.filter(t=>state.tools.includes(t.id)).flatMap(t=>t.feats.map(f=>f[0])));
+  const nf = Object.keys(state.imp).filter(k=>valid.has(k)).length;
+  $("#d-tools").textContent = nt; $("#d-targets").textContent = ng; $("#d-feats").textContent = nf;
+  $("#cnt-tools").textContent = `${nt} selected`; $("#cnt-targets").textContent = `${ng} destination${ng===1?"":"s"}`; $("#cnt-feats").textContent = `${nf} rated`;
+  $("#c1").textContent = nt||""; $("#c2").textContent = ng||""; $("#c3").textContent = nf||"";
+  $("#st1").classList.toggle("done", nt>0); $("#st2").classList.toggle("done", ng>0); $("#st3").classList.toggle("done", nf>0); $("#st4").classList.toggle("done", analysed);
+  for(const t of TOOLS){ const el = document.getElementById("prog-"+t.id); if(!el) continue;
+    const r = t.feats.filter(f=>state.imp[f[0]]).length; el.querySelector("i").style.width = (r/t.feats.length*100)+"%"; el.querySelector("span").textContent = `${r} / ${t.feats.length}`; }
+}
+
+function card(t, id, chosen, key, extra=""){
+  return `<div class="pick ${extra}"><input type="checkbox" id="${key}-${id}" value="${id}" ${chosen.includes(id)?"checked":""}>
+    <label for="${key}-${id}"><span class="nm">${esc(t.name)}</span><span class="ck">${CHECK}</span><span class="sb">${esc(t.sub)}</span>
+    ${t.st?`<span class="badge ${t.eol?"eol":"live"}">${esc(t.st)}</span>`:""}</label></div>`;
 }
 function renderPickers(){
   const fams = [...new Set(TOOLS.map(t=>t.fam))];
-  $("#tools").innerHTML = fams.map(f => `<div class="fam"><div class="cat">${f}</div><div class="tools" id="fam-${f.replace(/\W/g,"")}"></div></div>`).join("");
-  for(const f of fams) cards("#fam-"+f.replace(/\W/g,""), TOOLS.filter(t=>t.fam===f), state.tools, "tool");
-  cards("#targets", TARGETS, state.targets, "target");
+  $("#tools").innerHTML = fams.map(f => `<div class="famlabel">${f}</div><div class="cards">${TOOLS.filter(t=>t.fam===f).map(t=>card(t,t.id,state.tools,"tool")).join("")}</div>`).join("");
+  $("#targets").innerHTML = TARGETS.map(t => card(t,t.k,state.targets,"target",t.k==="dc"?"base":"")).join("");
 }
-$("#tools").onchange = e => { const v=e.target.value; state.tools = e.target.checked ? [...state.tools,v] : state.tools.filter(x=>x!==v); changed(); renderFeatures(); };
+$("#tools").onchange = e => { const v=e.target.value; state.tools = e.target.checked ? [...state.tools,v] : state.tools.filter(x=>x!==v); if(e.target.checked) openGroups.add(v); changed(); renderFeatures(); };
 $("#targets").onchange = e => { const v=e.target.value; state.targets = e.target.checked ? [...state.targets,v] : state.targets.filter(x=>x!==v); changed(); renderFeatures(); };
 
 function renderFeatures(){
   const sel = TOOLS.filter(t => state.tools.includes(t.id));
   const tg = TARGETS.filter(t => state.targets.includes(t.k) && t.k!=="dc");
-  if(!sel.length){ $("#features").innerHTML = `<div class="empty">Pick at least one product in Step 1 to see its features.</div>`; return; }
-  $("#features").innerHTML = (isExample ? `<div class="sample" id="sample">Example answers are loaded so you can see how it works. Use “Clear answers” to start with your own.</div>` : "") +
-  sel.map(t => {
+  if(!sel.length){ $("#features").innerHTML = `<div class="empty">Pick at least one tool in step 1 to see its features.</div>`; counts(); return; }
+  const q = query.toLowerCase();
+  let shown = 0;
+  const html = sel.map(t => {
     let cat = "", rows = "";
     for(const f of t.feats){
-      const [id,c,name,d,,note] = f;
-      if(c!==cat){ rows += `<div class="cat">${c}</div>`; cat=c; }
-      const v = state.imp[id]||0;
-      rows += `<div class="row ${v?"":"unused"}">
+      const [id,c,name,d,,note] = f, v = state.imp[id]||0;
+      if(q && !(name+" "+d+" "+c).toLowerCase().includes(q)) continue;
+      if(filter==="rated" && !v || filter==="open" && v) continue;
+      shown++;
+      if(c!==cat){ rows += `<div class="cat">${esc(c)}</div>`; cat=c; }
+      rows += `<div class="row ${v?"rated":""}">
         <div><div class="f">${esc(name)}</div><div class="d">${esc(d)}</div>
-          ${tg.length?`<div class="ratings">${tg.map(x=>`<span class="pill r-${rating(f,x.k)}"><i>${x.k==="oss"?esc(t.oss):x.short}</i>${RL[rating(f,x.k)]}</span>`).join("")}</div>`:""}
-          ${note?`<div class="note">${esc(note)}</div>`:""}</div>
+          ${tg.length?`<div class="rt">${tg.map(x=>{const r=rating(f,x.k);return `<span class="pill r-${r}"><i>${x.k==="oss"?esc(t.oss):x.short}</i>${RL[r]}</span>`}).join("")}</div>`:""}
+          ${note?`<div class="note"><span aria-hidden="true">↳</span><span>${esc(note)}</span></div>`:""}</div>
         <div class="imp" role="radiogroup" aria-label="Importance of ${esc(name)}">${IMP.map((lab,i)=>`<input type="radio" name="imp-${id}" id="imp-${id}-${i}" value="${i}" ${v===i?"checked":""}><label for="imp-${id}-${i}">${lab}</label>`).join("")}</div>
       </div>`;
     }
-    return `<div class="group"><header><h3>${t.name}</h3><span class="oss">${esc(t.st)}</span></header>${rows}</div>`;
+    if(!rows) return "";
+    const open = openGroups.has(t.id) || q || filter!=="all";
+    return `<details class="grp" data-id="${t.id}" ${open?"open":""}><summary>
+      <div class="gt"><h3>${esc(t.name)}</h3><span class="badge ${t.eol?"eol":"live"}">${esc(t.st)}</span></div>
+      <div class="prog" id="prog-${t.id}"><span></span><span class="tr"><i></i></span>${CHEV}</div>
+      </summary><div class="body">${rows}</div></details>`;
   }).join("");
+  $("#features").innerHTML = (isExample ? `<div class="hint" id="sample">Example answers are loaded so you can see how it works. Choose “Clear answers” to start with your own.</div>` : "") +
+    (shown ? html : `<div class="empty">No features match. Try another search or filter.</div>`);
+  counts();
 }
+$("#features").addEventListener("toggle", e => { const d = e.target.closest?.("details.grp"); if(!d) return; d.open ? openGroups.add(d.dataset.id) : openGroups.delete(d.dataset.id); }, true);
 $("#features").addEventListener("change", e => {
   const m = e.target.name && e.target.name.match(/^imp-(.+)$/); if(!m) return;
   const v = +e.target.value; if(v) state.imp[m[1]] = v; else delete state.imp[m[1]];
-  e.target.closest(".row").classList.toggle("unused", !v);
+  e.target.closest(".row").classList.toggle("rated", !!v);
   $("#sample")?.remove(); changed();
 });
+$("#q").addEventListener("input", e => { query = e.target.value.trim(); renderFeatures(); });
+document.querySelector(".seg").onclick = e => { const b = e.target.closest("button"); if(!b) return; filter = b.dataset.f;
+  document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", x===b)); renderFeatures(); };
 
 function calc(feats, k){
   let got=0, max=0; const gaps=[], partial=[];
@@ -483,75 +667,82 @@ function calc(feats, k){
   return {pct: max ? got/max : null, gaps, partial};
 }
 const better = (a,b) => (a.gaps.length-b.gaps.length) || (b.pct-a.pct);
+function msg(t){ $("#runmsg").textContent = t; }
 
-function analyse(){
+function analyse(scroll=true){
   const sel = TOOLS.filter(t => state.tools.includes(t.id));
   const tg = TARGETS.filter(t => state.targets.includes(t.k));
   const dest = tg.filter(t => t.k!=="dc");
   const all = sel.flatMap(t => t.feats.map(f => Object.assign(f, {tool:t})));
   const used = all.filter(f => state.imp[f[0]]);
-  if(!sel.length) return msg("Pick at least one product in Step 1.");
-  if(!dest.length) return msg("Pick at least one platform to move to in Step 2.");
-  if(!used.length) return msg("Mark the importance of at least one feature in Step 3.");
+  if(!sel.length){ msg("Pick a tool in step 1."); location.hash="s1"; return; }
+  if(!dest.length){ msg("Pick a platform in step 2."); location.hash="s2"; return; }
+  if(!used.length){ msg("Rate at least one feature."); location.hash="s3"; return; }
   msg("");
 
   const tot = Object.fromEntries(tg.map(t => [t.k, calc(all,t.k)]));
   const rank = dest.map(t=>t.k).sort((a,b) => better(tot[a],tot[b]));
   const best = rank[0], B = tot[best];
-
   const per = sel.map(t => {
     const r = Object.fromEntries(tg.map(x => [x.k, calc(t.feats,x.k)]));
-    const has = r[dest[0].k].pct != null;
-    const win = has ? dest.map(x=>x.k).sort((a,b)=>better(r[a],r[b]))[0] : null;
+    const win = r[dest[0].k].pct != null ? dest.map(x=>x.k).sort((a,b)=>better(r[a],r[b]))[0] : null;
     return {t, r, win};
   });
   const wins = per.filter(p=>p.win);
   const mixed = new Set(wins.map(p=>p.win)).size > 1;
+  const verdict = B.gaps.length===0 && B.pct>=.8 ? "Strong fit" : B.gaps.length===0 && B.pct>=.6 ? "Workable, with some workarounds" : "Fits, with significant gaps";
+  const ringCol = B.gaps.length===0 && B.pct>=.8 ? "var(--ok)" : B.gaps.length===0 && B.pct>=.6 ? "var(--warn)" : "var(--bad)";
+  const C = 2*Math.PI*62;
 
-  const verdict = B.gaps.length===0 && B.pct>=.8 ? "Strong fit" : B.gaps.length===0 && B.pct>=.6 ? "Workable, with some workarounds" : "Fits, but with significant gaps";
+  $("#verdict").innerHTML = `<div class="ring"><svg width="148" height="148" viewBox="0 0 148 148"><circle cx="74" cy="74" r="62" fill="none" stroke="var(--line)" stroke-width="12"/>
+      <circle cx="74" cy="74" r="62" fill="none" stroke="${ringCol}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C*B.pct} ${C}"/></svg>
+      <div class="v"><div><b>${pct(B.pct)}</b><span>overall fit</span></div></div></div>
+    <div><div class="l" style="color:${ringCol}">Recommended · ${verdict}</div><h3>${TK[best].name}</h3>
+      <p>Covers ${pct(B.pct)} of what you use across ${used.length} feature${used.length>1?"s":""} in ${sel.length} tool${sel.length>1?"s":""}${B.gaps.length?`. ${B.gaps.length} must-have${B.gaps.length>1?"s are":" is"} missing`:", with no must-have gaps"}.${mixed?" Some tools fit better elsewhere, so a mix is worth weighing against running one platform.":""}</p>
+      ${mixed?`<div class="mixline">${wins.map(p=>`<span>${esc(p.t.name)} → <b>${esc(tname(p.win,p.t))}</b></span>`).join("")}</div>`:""}</div>`;
+
   const order = [...rank, ...(tg.some(t=>t.k==="dc")?["dc"]:[])];
-  $("#verdict").innerHTML = `<div class="label">Recommendation</div>
-    <h2>${TK[best].name}</h2>
-    <p>${verdict}. It covers ${pct(B.pct)} of what you use across ${used.length} feature${used.length>1?"s":""}${B.gaps.length?`, but ${B.gaps.length} must-have${B.gaps.length>1?"s are":" is"} missing`:", with no must-have gaps"}.
-    ${mixed ? ` Your products fit best on different platforms: ${wins.map(p=>`${p.t.name} → ${tname(p.win,p.t)}`).join(", ")}. Weigh running one platform against the better fit of a mix.` : ""}</p>
-    <div class="bars">${order.map(k => `<div class="bar ${k===best?"best":k==="dc"?"base":""}"><div class="top"><span>${TK[k].name}${k==="dc"?" (baseline)":""}</span><b>${pct(tot[k].pct)}</b></div>
-      <div class="track"><div class="fill" style="width:${Math.round(tot[k].pct*100)}%"></div></div>
-      <div class="meta">${k==="dc"?"What you have today. Atlassian Data Center products still become read-only on 28 Mar 2029.":`${tot[k].gaps.length?`<span class="g">${tot[k].gaps.length} must-have gap${tot[k].gaps.length>1?"s":""}</span>`:"No must-have gaps"} · ${tot[k].partial.length} must-have only partly covered`}</div></div>`).join("")}</div>`;
+  $("#bars").innerHTML = order.map(k => `<div class="bar ${k===best?"best":k==="dc"?"base":""}"><div class="tp"><span>${TK[k].name}</span><span class="num">${pct(tot[k].pct)}</span></div>
+      <div class="tr"><i style="width:0" data-w="${Math.round(tot[k].pct*100)}%"></i></div>
+      <div class="mt">${k==="dc"?"Baseline: what you have today.":`${tot[k].gaps.length?`<span class="g">${tot[k].gaps.length} must-have gap${tot[k].gaps.length>1?"s":""}</span>`:"No must-have gaps"} · ${tot[k].partial.length} partly covered`}</div></div>`).join("");
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll("#bars i").forEach(i=>i.style.width=i.dataset.w)));
 
-  $("#matrix").innerHTML = `<table class="grid"><thead><tr><th>Product</th>${tg.map(t=>`<th>${t.name}</th>`).join("")}<th>Best fit</th></tr></thead><tbody>
-    ${per.map(p => `<tr><td>${p.t.name}</td>${tg.map(t=>`<td class="num ${p.win===t.k?"win":""}">${pct(p.r[t.k].pct)}${p.r[t.k].gaps.length?` <span class="pill r-X">${p.r[t.k].gaps.length} gap</span>`:""}</td>`).join("")}<td>${p.win?tname(p.win,p.t)+(p.t.eol?"":` <span class="muted">or keep and integrate</span>`):`<span class="muted">No features marked</span>`}</td></tr>`).join("")}
-    <tr class="total"><td>Overall</td>${tg.map(t=>`<td class="num ${t.k===best?"win":""}">${pct(tot[t.k].pct)}</td>`).join("")}<td>${TK[best].name}</td></tr></tbody></table>`;
+  const li = (f,r) => `<li><span class="pill r-${r}">${RL[r]}</span><span><b>${esc(f[2])}</b> <span class="m">· ${esc(f.tool.name)}</span>${f[5]?`<br><span class="m">${esc(f[5])}</span>`:""}</span></li>`;
+  $("#gaps").innerHTML = rank.map(k => { const x = tot[k];
+    return `<details class="gap" ${k===best?"open":""}><summary>${TK[k].name}<span>${x.gaps.length} missing · ${x.partial.length} partial</span></summary>
+      ${x.gaps.length+x.partial.length ? `<ul class="gl">${x.gaps.map(f=>li(f,"X")).join("")}${x.partial.map(f=>li(f,rating(f,k))).join("")}</ul>` : `<p class="muted">Every must-have is built in.</p>`}</details>`; }).join("");
 
-  const li = (f,cls) => `<li><b>${esc(f[2])}</b> <span class="muted">(${f.tool.name})</span> <span class="pill ${cls}">${RL[cls.slice(2)]}</span>${f[5]?`<br><span class="muted">${esc(f[5])}</span>`:""}</li>`;
-  $("#gaps").innerHTML = rank.map(k => { const x = tot[k], n = x.gaps.length + x.partial.length;
-    return `<details ${k===best?"open":""}><summary>${TK[k].name} <span>${x.gaps.length} missing · ${x.partial.length} partial</span></summary>
-      ${n ? `<ul class="gaps">${x.gaps.map(f=>li(f,"r-X")).join("")}${x.partial.map(f=>li(f,"r-"+rating(f,k))).join("")}</ul>` : `<p class="muted">Every must-have is built in.</p>`}</details>`; }).join("");
+  $("#matrix").innerHTML = `<table class="hm"><thead><tr><th>Tool</th>${tg.map(t=>`<th>${t.short}</th>`).join("")}<th style="text-align:left">Best fit</th></tr></thead><tbody>
+    ${per.map(p => `<tr><td>${esc(p.t.name)}</td>${tg.map(t=>{const x=p.r[t.k];return `<td class="c ${heat(x.pct)} ${p.win===t.k?"win":""}">${pct(x.pct)}${x.gaps.length?`<small>${x.gaps.length} gap${x.gaps.length>1?"s":""}</small>`:""}</td>`}).join("")}
+      <td class="best">${p.win?esc(tname(p.win,p.t))+(p.t.eol?"":"<small>or keep and integrate</small>"):`<span class="muted">No features rated</span>`}</td></tr>`).join("")}
+    <tr class="total"><td>Overall</td>${tg.map(t=>`<td class="c ${heat(tot[t.k].pct)} ${t.k===best?"win":""}">${pct(tot[t.k].pct)}</td>`).join("")}<td class="best">${TK[best].name}</td></tr></tbody></table>`;
 
-  $("#mapping").innerHTML = `<table class="grid"><thead><tr><th>Feature</th><th>Importance</th>${dest.map(t=>`<th>${t.name}</th>`).join("")}</tr></thead><tbody>
-    ${used.sort((a,b)=>state.imp[b[0]]-state.imp[a[0]]).map(f => `<tr><td><b>${esc(f[2])}</b><br><span class="muted">${f.tool.name}</span></td><td>${IMP[state.imp[f[0]]]}</td>${dest.map(t=>`<td><span class="pill r-${rating(f,t.k)}">${RL[rating(f,t.k)]}</span></td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  $("#mapping").innerHTML = `<table class="map"><thead><tr><th>Feature</th><th>Importance</th>${dest.map(t=>`<th>${t.short}</th>`).join("")}</tr></thead><tbody>
+    ${used.slice().sort((a,b)=>state.imp[b[0]]-state.imp[a[0]]).map(f => `<tr><td><b>${esc(f[2])}</b><span class="m">${esc(f.tool.name)}</span></td><td><span class="impt i${state.imp[f[0]]}">${IMP[state.imp[f[0]]]}</span></td>${dest.map(t=>{const r=rating(f,t.k);return `<td><span class="pill r-${r}">${RL[r]}</span></td>`}).join("")}</tr>`).join("")}</tbody></table>`;
 
-  summary = [`DevOps Platform Planner: analysis`, `Tools today: ${sel.map(t=>t.name).join(", ")}`, `Platforms compared: ${tg.map(t=>t.name).join(", ")}`, `Features in use: ${used.length}`, ``,
+  summary = [`DevOps Platform Planner: analysis`, `Tools today: ${sel.map(t=>t.name).join(", ")}`, `Platforms compared: ${tg.map(t=>t.name).join(", ")}`, `Features rated: ${used.length}`, ``,
     `Recommendation: ${TK[best].name} (${pct(B.pct)} fit, ${B.gaps.length} must-have gaps)`, ``,
     `Overall fit:`, ...order.map(k => `- ${TK[k].name}: ${pct(tot[k].pct)}${k==="dc"?" (baseline)":`, ${tot[k].gaps.length} must-have gaps`}`), ``,
-    `Best fit per product:`, ...wins.map(p => `- ${p.t.name} -> ${tname(p.win,p.t)} (${pct(p.r[p.win].pct)})${p.t.eol?"":", or keep and integrate"}`), ``,
+    `Best fit per tool:`, ...wins.map(p => `- ${p.t.name} -> ${tname(p.win,p.t)} (${pct(p.r[p.win].pct)})${p.t.eol?"":", or keep and integrate"}`), ``,
     `Must-have gaps on ${TK[best].name}:`, ...(B.gaps.length ? B.gaps.map(f=>`- ${f[2]} (${f.tool.name})`) : ["- none"]),
-    `Must-haves only partly covered:`, ...(B.partial.length ? B.partial.map(f=>`- ${f[2]} (${f.tool.name})`) : ["- none"])].join("\n");
+    `Must-haves only partly covered:`, ...(B.partial.length ? B.partial.map(f=>`- ${f[2]} (${f.tool.name})`) : ["- none"]),
+    ``, `Made with DevOps Platform Planner by Harsh Goyal`].join("\n");
 
-  analysed = true; $("#stale").hidden = true; $("#results").hidden = false;
-  $("#results").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
+  analysed = true; $("#stale").hidden = true; $("#pre").hidden = true; $("#results").hidden = false; counts();
+  if(scroll) $("#s4").scrollIntoView({block:"start"});
 }
-function msg(t){ $("#runmsg").textContent = t; }
 
-$("#run").onclick = analyse;
+$("#run").onclick = () => analyse();
+$("#rerun").onclick = () => analyse();
 $("#copy").onclick = () => {
   const done = () => $("#copymsg").textContent = "Summary copied. Paste it into an email or document.";
   const fallback = () => { let ta=$("#copyfallback"); if(!ta){ ta=document.createElement("textarea"); ta.id="copyfallback"; ta.readOnly=true; $("#results").append(ta); } ta.value=summary; ta.select(); $("#copymsg").textContent="Copying was blocked. Select the text below and copy it."; };
   try{ navigator.clipboard.writeText(summary).then(done, fallback); }catch(e){ fallback(); }
 };
 $("#reset").onclick = () => { state.imp = {}; changed(); renderFeatures(); };
-$("#example").onclick = () => { state = structuredClone(EXAMPLE); changed(); isExample = true; renderPickers(); renderFeatures(); };
+$("#example").onclick = () => { state = structuredClone(EXAMPLE); openGroups.add(state.tools[0]); changed(); isExample = true; renderPickers(); renderFeatures(); };
 
-function demo(){ if(location.hash!=="#demo") return; state = structuredClone(EXAMPLE); isExample = true; renderPickers(); renderFeatures(); analyse(); $("#results").scrollIntoView(); }
+function demo(){ if(location.hash!=="#demo") return; state = structuredClone(EXAMPLE); isExample = true; renderPickers(); renderFeatures(); analyse(false); $("#s4").scrollIntoView({block:"start"}); }
 addEventListener("hashchange", demo);
 renderPickers(); renderFeatures(); demo();
 </script>
