@@ -124,6 +124,8 @@ ul.gaps b{color:var(--ink)}
 .tool label .dc.ok{color:var(--ink-3)}
 #tools{display:grid;gap:6px}
 #tools .cat{padding:8px 0 8px}
+footer a{color:var(--accent)}
+.credit{margin:12px 0 0;font-size:13.5px;color:var(--ink-2)}
 footer{margin-top:32px;border-top:1px solid var(--line);padding-top:16px;font-size:12.5px;color:var(--ink-3);max-width:90ch}
 textarea#copyfallback{width:100%;height:160px;margin-top:10px;font:12px/1.4 var(--mono);background:var(--ground);color:var(--ink);border:1px solid var(--line-2);border-radius:5px;padding:8px}
 @media (prefers-reduced-motion:reduce){.bar .fill{transition:none}}
@@ -179,6 +181,7 @@ textarea#copyfallback{width:100%;height:160px;margin-top:10px;font:12px/1.4 var(
 
   <footer>
     Ratings reflect GitHub Enterprise Server 3.20, current Azure DevOps Server, GitLab Self-Managed Premium (Ultimate-only features count as Add-on) and the named open-source products (free editions), without third-party plugins unless marked Add-on. "Keep current tools" is your baseline: it scores full marks and is never recommended as a destination. Tools that are still supported can also stay and be integrated. Ratings are a general assessment, not vendor-certified. Check your Must-have items in a proof of concept. Scoring: Must = 3, Should = 2, Nice = 1; Native counts 100%, Partial or Add-on 50%, None 0%.
+    <p class="credit">Built by <a href="https://harshgoyal1.github.io/">Harsh Goyal</a>. Planning a move or worried about data residency? Message me on LinkedIn. <a href="#demo">See a sample analysis</a>.</p>
   </footer>
 </div>
 </div>
@@ -548,7 +551,9 @@ $("#copy").onclick = () => {
 $("#reset").onclick = () => { state.imp = {}; changed(); renderFeatures(); };
 $("#example").onclick = () => { state = structuredClone(EXAMPLE); changed(); isExample = true; renderPickers(); renderFeatures(); };
 
-renderPickers(); renderFeatures();
+function demo(){ if(location.hash!=="#demo") return; state = structuredClone(EXAMPLE); isExample = true; renderPickers(); renderFeatures(); analyse(); $("#results").scrollIntoView(); }
+addEventListener("hashchange", demo);
+renderPickers(); renderFeatures(); demo();
 </script>
 </body>
 </html>
