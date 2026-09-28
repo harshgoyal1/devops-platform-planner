@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Atlassian Exit Planner</title>
-<meta name="description" content="Pick the Atlassian tools you run today, mark the features you use, and see which on-prem platform fits best.">
+<title>DevOps Platform Planner</title>
+<meta name="description" content="Pick the tools you run today and the platforms you are considering, mark the features you use, and get a feature-by-feature comparison and recommendation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -52,8 +52,6 @@ section{margin-bottom:32px}
 .tool label{display:grid;gap:2px;padding:12px 14px;border:1px solid var(--line-2);border-radius:6px;background:var(--panel);cursor:pointer;height:100%}
 .tool label .t{font-weight:600}
 .tool label .s{font-size:12.5px;color:var(--ink-3)}
-.tool label .dc{font:500 11px/1.3 var(--mono);color:var(--bad);margin-top:4px}
-.tool label .dc.ok{color:var(--ok)}
 .tool input:checked+label{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
 .tool input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -123,7 +121,9 @@ ul.gaps b{color:var(--ink)}
 .sample{font-size:12.5px;color:var(--accent);margin-bottom:12px}
 .stale{background:var(--warn-soft);color:var(--ink);border-radius:6px;padding:10px 12px;font-size:13.5px}
 .tool label .dc{font:500 11px/1.3 var(--mono);color:var(--bad);margin-top:4px}
-.tool label .dc.ok{color:var(--ok)}
+.tool label .dc.ok{color:var(--ink-3)}
+#tools{display:grid;gap:6px}
+#tools .cat{padding:8px 0 8px}
 footer{margin-top:32px;border-top:1px solid var(--line);padding-top:16px;font-size:12.5px;color:var(--ink-3);max-width:90ch}
 textarea#copyfallback{width:100%;height:160px;margin-top:10px;font:12px/1.4 var(--mono);background:var(--ground);color:var(--ink);border:1px solid var(--line-2);border-radius:5px;padding:8px}
 @media (prefers-reduced-motion:reduce){.bar .fill{transition:none}}
@@ -134,15 +134,15 @@ textarea#copyfallback{width:100%;height:160px;margin-top:10px;font:12px/1.4 var(
 <div class="wrap">
 <header class="top">
   <div class="eyebrow">On-prem migration assessment</div>
-  <h1>Atlassian Exit Planner</h1>
-  <p class="lede">Choose the Atlassian products you run and the platforms you're considering, then mark how much each feature matters. Run the analysis to compare the platforms feature by feature and get a recommendation.</p>
-  <div class="notice"><b>Why now:</b><span>Jira Server support ended on 15 Feb 2024. Atlassian stopped selling Data Center to new customers on 30 Mar 2026, and Data Center goes read-only on 28 Mar 2029. Bitbucket is the only exception. Staying on Atlassian long term means moving to Cloud.</span></div>
+  <h1>DevOps Platform Planner</h1>
+  <p class="lede">Choose the tools you run today (Atlassian, CI/CD, ALM and test, artifacts, ITSM, wikis) and the platforms you're considering, then mark how much each feature matters. Run the analysis to compare the platforms feature by feature and get a recommendation.</p>
+  <div class="notice"><b>Why now:</b><span>Atlassian Data Center goes read-only on 28 Mar 2029 (Bitbucket excepted), and new Data Center sales stopped on 30 Mar 2026. Older TFS versions are out of support. Other tools here are still supported. For those, the question is whether to consolidate or keep them and integrate.</span></div>
 </header>
 
 <div class="layout">
   <section>
-    <div class="step"><span class="n">STEP 1</span><h2>Which Atlassian products do you run today?</h2></div>
-    <div class="tools" id="tools"></div>
+    <div class="step"><span class="n">STEP 1</span><h2>Which tools do you run today?</h2></div>
+    <div id="tools"></div>
   </section>
 
   <section>
@@ -178,144 +178,267 @@ textarea#copyfallback{width:100%;height:160px;margin-top:10px;font:12px/1.4 var(
   </section>
 
   <footer>
-    Ratings reflect GitHub Enterprise Server 3.20, current Azure DevOps Server and the named open-source products (free editions), without third-party plugins unless marked Add-on. "Stay on Data Center" is your current baseline: it scores full marks but ends on 28 Mar 2029, so it is never recommended as a destination. Ratings are a general assessment, not vendor-certified. Check your Must-have items in a proof of concept. Scoring: Must = 3, Should = 2, Nice = 1; Native counts 100%, Partial or Add-on 50%, None 0%.
+    Ratings reflect GitHub Enterprise Server 3.20, current Azure DevOps Server, GitLab Self-Managed Premium (Ultimate-only features count as Add-on) and the named open-source products (free editions), without third-party plugins unless marked Add-on. "Keep current tools" is your baseline: it scores full marks and is never recommended as a destination. Tools that are still supported can also stay and be integrated. Ratings are a general assessment, not vendor-certified. Check your Must-have items in a proof of concept. Scoring: Must = 3, Should = 2, Nice = 1; Native counts 100%, Partial or Add-on 50%, None 0%.
   </footer>
 </div>
 </div>
 
 <script>
 const TARGETS = [
-  {k:"ado", name:"Azure DevOps Server", sub:"Microsoft, on-prem", col:4},
-  {k:"gh",  name:"GitHub Enterprise Server", sub:"GitHub, on-prem (3.20)", col:5},
-  {k:"oss", name:"Open-source stack", sub:"OpenProject, XWiki, Zammad, Jenkins…", col:6},
-  {k:"dc",  name:"Stay on Data Center", sub:"Baseline only, ends 28 Mar 2029", col:null},
+  {k:"ado", name:"Azure DevOps Server", short:"Azure DevOps", sub:"Microsoft, on-prem", i:0},
+  {k:"gh",  name:"GitHub Enterprise Server", short:"GitHub ES", sub:"GitHub, on-prem (3.20)", i:1},
+  {k:"gl",  name:"GitLab Self-Managed", short:"GitLab", sub:"Premium tier; Ultimate-only features count as Add-on", i:2},
+  {k:"oss", name:"Open-source stack", short:"Open source", sub:"OpenProject, XWiki, Gitea, Jenkins, Kiwi TCMS…", i:3},
+  {k:"dc",  name:"Keep current tools", short:"Current", sub:"Baseline only. Scores what you have today", i:null},
 ];
 const TK = Object.fromEntries(TARGETS.map(t => [t.k, t]));
 const RL = {N:"Native",P:"Partial",A:"Add-on",X:"None"};
 const RS = {N:1,P:.5,A:.5,X:0};
 const IMP = ["Not used","Nice","Should","Must"];
 const TOOLS = [
-{id:"jira", name:"Jira Software", sub:"Issues, boards, sprints", dc:"Data Center read-only from 28 Mar 2029", oss:"OpenProject", feats:[
-["j1","Work items","Custom issue types","Create your own item types beyond Bug and Story, such as Risk, Change Request or Spike, each with its own fields and screen.","N","P","N","GHES: organisation-level issue types, limited count."],
-["j2","Work items","Multi-level hierarchy","Nest work several levels deep (Initiative > Epic > Story > Sub-task) so progress rolls up from tasks to business goals.","N","P","N","GHES: sub-issues. Check they're enabled on your instance."],
-["j3","Work items","Typed issue links","Connect issues with named relationships such as 'blocks', 'is blocked by', 'duplicates' or 'relates to', and see them on both sides.","N","P","N",""],
-["j4","Work items","Custom fields","Add extra fields (customer, severity, environment, cost centre) to issues so every team captures the data it needs.","N","P","N","GHES: fields belong to a Project, not to the issue globally."],
-["j5","Work items","Rich field types","Use advanced field types: cascading select (Country > City), user pickers, multi-select lists, checkboxes and date-time.","N","P","P","GHES project fields: text, number, date, single-select, iteration."],
-["j6","Work items","Required fields and validation","Force a field to be filled or valid before an issue can be created or moved, for example 'Root cause' before closing a bug.","N","P","P","GHES issue forms apply at creation only."],
-["j7","Work items","Components or areas","Split a project into product areas or modules, each with its own default owner, for filtering and reporting.","N","P","P",""],
-["j8","Work items","Fix versions and releases","Assign issues to a release version, track what is left to ship and publish release notes from it.","P","P","N",""],
-["j9","Work items","Bulk edit and move","Change fields, status or assignee on hundreds of issues at once, or move them between projects.","N","P","N",""],
-["j10","Workflow","Custom statuses","Define your own steps such as In QA, UAT or Awaiting Approval instead of just To do / In progress / Done.","N","P","N","GHES: a Status field only, no state machine."],
-["j11","Workflow","Transition rules","Control who can move an issue and when: conditions (only QA can close), validators (field required) and post-functions (auto-assign).","P","X","P","ADO: work item rules. OpenProject: allowed transitions per role."],
-["j12","Workflow","Workflow per issue type","Give different item types different flows, for example bugs go through triage while stories go through design review.","N","X","N",""],
-["j13","Workflow","Approval steps","Require a named approver to sign off before work moves on, with the approval recorded on the issue.","P","X","X",""],
-["j14","Boards and planning","Scrum board and backlog","Plan sprints from a ranked backlog and track them on a sprint board with columns per status.","N","N","P",""],
-["j15","Boards and planning","Kanban board","Visualise continuous flow of work across columns without fixed sprints.","N","N","N",""],
-["j16","Boards and planning","WIP limits and swimlanes","Cap how many items sit in a column and split the board into horizontal lanes by assignee, epic or priority.","N","P","X","GHES: column limits are visual only; group-by instead of lanes."],
-["j17","Boards and planning","Sprint start, complete and carry-over","Formally start and close a sprint, with unfinished work moved to the next sprint or backlog automatically.","N","P","P",""],
-["j18","Boards and planning","Story points","Estimate relative effort in points and use it for sprint planning and velocity.","N","P","N",""],
-["j19","Boards and planning","Team capacity planning","Enter each person's available days per sprint and see whether the planned work fits.","N","X","X",""],
-["j20","Boards and planning","Roadmap or Gantt","Show epics and issues on a timeline with start and end dates and the dependencies between them.","N","P","N","OpenProject has a strong Gantt view."],
-["j21","Boards and planning","Portfolio planning across teams","Plan many teams and projects in one view (Advanced Roadmaps / Plans), including cross-team dependencies and scenarios.","P","X","P","ADO: Delivery Plans. GHES: one Project per organisation."],
-["j22","Search and reports","Advanced query language (JQL)","Write complex searches such as 'project = X AND status changed to Done during (-2w, now())' and save them.","N","P","P",""],
-["j23","Search and reports","Velocity, burndown, cumulative flow","Standard agile charts showing sprint progress, team throughput and where work piles up.","N","P","P","GHES: burn-up in Insights only."],
-["j24","Search and reports","Dashboards with gadgets","Build team or management dashboards from widgets: filter results, charts, pie charts, sprint health.","N","X","P",""],
-["j25","Search and reports","Excel or Power BI reporting","Export issue data to Excel or connect BI tools for management reporting.","N","P","P","ADO: Excel add-in and OData Analytics."],
-["j26","Time tracking","Time logging and worklogs","Record hours spent on an issue with date and comment, and compare against the original estimate.","P","X","N","ADO: Completed Work field, no per-entry log."],
-["j27","Time tracking","Timesheets and cost reports","Produce timesheets per person or project, often for billing or capitalisation (typically done with Tempo).","A","X","P",""],
-["j28","Integration","Link commits, branches and PRs","See the code changes, branches and pull requests for an issue directly on it.","N","N","P",""],
-["j29","Integration","Automation rules","No-code rules such as 'when all sub-tasks are done, close the parent' or 'assign new bugs to the component lead'.","P","P","P","GHES: built-in workflows plus GitHub Actions."],
-["j30","Integration","REST API and webhooks","Let other systems read and write issues and receive events when something changes.","N","N","N",""],
-["j31","Integration","Create issues from email","Send a mail to a project address and get an issue created or a comment added.","X","X","N",""],
-["j32","Integration","Test case management","Write test cases, run test cycles and link results to stories and bugs (Xray or Zephyr in Jira).","A","X","X","ADO: Test Plans, extra licence."],
-["j33","Security","Project permission schemes","Fine-grained roles per project: who can browse, create, edit, transition, delete or administer.","N","P","N",""],
-["j34","Security","Issue-level security","Hide individual issues (security bugs, HR cases) from users who can otherwise see the project.","P","X","X",""],
-["j35","Usage","Business teams","Non-engineering teams (HR, finance, marketing, legal) tracking their own work in simple projects.","P","P","N","GHES: every user needs a licence and repo access."],
+{id:"jira", fam:"Atlassian", name:"Jira Software", sub:"Issues, boards, sprints", st:"Data Center read-only from 28 Mar 2029", eol:true, oss:"OpenProject", feats:[
+["j1", "Work items", "Custom issue types", "Create your own item types beyond Bug and Story, such as Risk, Change Request or Spike, each with its own fields and screen.", "NPPN", "GHES: organisation-level issue types, limited count."],
+["j2", "Work items", "Multi-level hierarchy", "Nest work several levels deep (Initiative > Epic > Story > Sub-task) so progress rolls up from tasks to business goals.", "NPNN", "GHES: sub-issues. Check they're enabled on your instance. GitLab: epics and child epics need Premium."],
+["j3", "Work items", "Typed issue links", "Connect issues with named relationships such as 'blocks', 'is blocked by', 'duplicates' or 'relates to', and see them on both sides.", "NPPN", ""],
+["j4", "Work items", "Custom fields", "Add extra fields (customer, severity, environment, cost centre) to issues so every team captures the data it needs.", "NPPN", "GHES: fields belong to a Project, not to the issue globally."],
+["j5", "Work items", "Rich field types", "Use advanced field types: cascading select (Country > City), user pickers, multi-select lists, checkboxes and date-time.", "NPPP", "GHES project fields: text, number, date, single-select, iteration."],
+["j6", "Work items", "Required fields and validation", "Force a field to be filled or valid before an issue can be created or moved, for example 'Root cause' before closing a bug.", "NPXP", "GHES issue forms apply at creation only."],
+["j7", "Work items", "Components or areas", "Split a project into product areas or modules, each with its own default owner, for filtering and reporting.", "NPPP", ""],
+["j8", "Work items", "Fix versions and releases", "Assign issues to a release version, track what is left to ship and publish release notes from it.", "PPPN", ""],
+["j9", "Work items", "Bulk edit and move", "Change fields, status or assignee on hundreds of issues at once, or move them between projects.", "NPNN", ""],
+["j10", "Workflow", "Custom statuses", "Define your own steps such as In QA, UAT or Awaiting Approval instead of just To do / In progress / Done.", "NPPN", "GHES: a Status field only, no state machine. GitLab: configurable statuses in recent Premium releases."],
+["j11", "Workflow", "Transition rules", "Control who can move an issue and when: conditions (only QA can close), validators (field required) and post-functions (auto-assign).", "PXXP", "ADO: work item rules. OpenProject: allowed transitions per role."],
+["j12", "Workflow", "Workflow per issue type", "Give different item types different flows, for example bugs go through triage while stories go through design review.", "NXXN", ""],
+["j13", "Workflow", "Approval steps", "Require a named approver to sign off before work moves on, with the approval recorded on the issue.", "PXXX", ""],
+["j14", "Boards and planning", "Scrum board and backlog", "Plan sprints from a ranked backlog and track them on a sprint board with columns per status.", "NNPP", ""],
+["j15", "Boards and planning", "Kanban board", "Visualise continuous flow of work across columns without fixed sprints.", "NNNN", ""],
+["j16", "Boards and planning", "WIP limits and swimlanes", "Cap how many items sit in a column and split the board into horizontal lanes by assignee, epic or priority.", "NPNX", "GHES: column limits are visual only; group-by instead of lanes."],
+["j17", "Boards and planning", "Sprint start, complete and carry-over", "Formally start and close a sprint, with unfinished work moved to the next sprint or backlog automatically.", "NPNP", ""],
+["j18", "Boards and planning", "Story points", "Estimate relative effort in points and use it for sprint planning and velocity.", "NPPN", ""],
+["j19", "Boards and planning", "Team capacity planning", "Enter each person's available days per sprint and see whether the planned work fits.", "NXXX", ""],
+["j20", "Boards and planning", "Roadmap or Gantt", "Show epics and issues on a timeline with start and end dates and the dependencies between them.", "NPPN", "OpenProject has a strong Gantt view."],
+["j21", "Boards and planning", "Portfolio planning across teams", "Plan many teams and projects in one view (Advanced Roadmaps / Plans), including cross-team dependencies and scenarios.", "PXPP", "ADO: Delivery Plans. GHES: one Project per organisation."],
+["j22", "Search and reports", "Advanced query language (JQL)", "Write complex searches such as 'project = X AND status changed to Done during (-2w, now())' and save them.", "NPPP", ""],
+["j23", "Search and reports", "Velocity, burndown, cumulative flow", "Standard agile charts showing sprint progress, team throughput and where work piles up.", "NPPP", "GHES: burn-up in Insights only."],
+["j24", "Search and reports", "Dashboards with gadgets", "Build team or management dashboards from widgets: filter results, charts, pie charts, sprint health.", "NXXP", ""],
+["j25", "Search and reports", "Excel or Power BI reporting", "Export issue data to Excel or connect BI tools for management reporting.", "NPPP", "ADO: Excel add-in and OData Analytics."],
+["j26", "Time tracking", "Time logging and worklogs", "Record hours spent on an issue with date and comment, and compare against the original estimate.", "PXNN", "ADO: Completed Work field, no per-entry log."],
+["j27", "Time tracking", "Timesheets and cost reports", "Produce timesheets per person or project, often for billing or capitalisation (typically done with Tempo).", "AXPP", ""],
+["j28", "Integration", "Link commits, branches and PRs", "See the code changes, branches and pull requests for an issue directly on it.", "NNNP", ""],
+["j29", "Integration", "Automation rules", "No-code rules such as 'when all sub-tasks are done, close the parent' or 'assign new bugs to the component lead'.", "PPPP", "GHES: built-in workflows plus GitHub Actions."],
+["j30", "Integration", "REST API and webhooks", "Let other systems read and write issues and receive events when something changes.", "NNNN", ""],
+["j31", "Integration", "Create issues from email", "Send a mail to a project address and get an issue created or a comment added.", "XXNN", "GitLab: Service Desk creates issues from email."],
+["j32", "Integration", "Test case management", "Write test cases, run test cycles and link results to stories and bugs (Xray or Zephyr in Jira).", "AXAX", "ADO: Test Plans, extra licence. GitLab: requirements and test cases need Ultimate."],
+["j33", "Security", "Project permission schemes", "Fine-grained roles per project: who can browse, create, edit, transition, delete or administer.", "NPPN", ""],
+["j34", "Security", "Issue-level security", "Hide individual issues (security bugs, HR cases) from users who can otherwise see the project.", "PXPX", "GitLab: confidential issues."],
+["j35", "Usage", "Business teams", "Non-engineering teams (HR, finance, marketing, legal) tracking their own work in simple projects.", "PPPN", "GHES: every user needs a licence and repo access."]
 ]},
-{id:"jsm", name:"Jira Service Management", sub:"Service desk and ITSM", dc:"Data Center read-only from 28 Mar 2029", oss:"Zammad / GLPI", feats:[
-["s1","Channels","Customer portal","A web page where employees or customers raise requests, see status and reply, without a full licence.","X","X","N",""],
-["s2","Channels","Email to ticket","Requests sent to a support mailbox become tickets, and replies thread back into them.","X","X","N",""],
-["s3","Operations","Queues and SLAs","Agents work from prioritised queues, with response and resolution targets and breach warnings.","X","X","N",""],
-["s4","Operations","Request types and forms","Each request type (new laptop, access request) has its own form so the right details are captured up front.","P","P","N",""],
-["s5","Operations","Approvals","Requests wait for a manager or change board to approve before work begins.","X","X","P",""],
-["s6","ITIL","Incident, problem and change","ITIL processes for outages, root-cause investigation and controlled changes with risk assessment.","X","X","P","GLPI and iTop cover ITIL more fully than Zammad."],
-["s7","ITIL","Assets and CMDB","Track hardware, software and services (formerly Insight) and link them to tickets to see impact.","X","X","P","GLPI includes asset inventory."],
-["s8","Knowledge","Customer knowledge base","Self-service articles suggested in the portal so users can solve problems before raising a ticket.","X","X","N",""],
-["s9","Knowledge","Satisfaction surveys","Ask the requester to rate the service when a ticket is resolved.","X","X","N",""],
-["s10","Integration","Escalate ticket to dev work","Link a support ticket to a development issue and keep both in sync.","P","P","P",""],
-["s11","Operations","On-call and alerting","Page the on-call engineer when monitoring raises an alert (Opsgenie, being retired by Atlassian).","X","X","X","Usually a separate tool such as PagerDuty or Grafana OnCall."],
+{id:"jsm", fam:"Atlassian", name:"Jira Service Management", sub:"Service desk and ITSM", st:"Data Center read-only from 28 Mar 2029", eol:true, oss:"Zammad / GLPI", feats:[
+["s1", "Channels", "Customer portal", "A web page where employees or customers raise requests, see status and reply, without a full licence.", "XXXN", ""],
+["s2", "Channels", "Email to ticket", "Requests sent to a support mailbox become tickets, and replies thread back into them.", "XXNN", ""],
+["s3", "Operations", "Queues and SLAs", "Agents work from prioritised queues, with response and resolution targets and breach warnings.", "XXPN", ""],
+["s4", "Operations", "Request types and forms", "Each request type (new laptop, access request) has its own form so the right details are captured up front.", "PPPN", ""],
+["s5", "Operations", "Approvals", "Requests wait for a manager or change board to approve before work begins.", "XXXP", ""],
+["s6", "ITIL", "Incident, problem and change", "ITIL processes for outages, root-cause investigation and controlled changes with risk assessment.", "XXPP", "GLPI and iTop cover ITIL more fully than Zammad."],
+["s7", "ITIL", "Assets and CMDB", "Track hardware, software and services (formerly Insight) and link them to tickets to see impact.", "XXXP", "GLPI includes asset inventory."],
+["s8", "Knowledge", "Customer knowledge base", "Self-service articles suggested in the portal so users can solve problems before raising a ticket.", "XXXN", ""],
+["s9", "Knowledge", "Satisfaction surveys", "Ask the requester to rate the service when a ticket is resolved.", "XXXN", ""],
+["s10", "Integration", "Escalate ticket to dev work", "Link a support ticket to a development issue and keep both in sync.", "PPNP", ""],
+["s11", "Operations", "On-call and alerting", "Page the on-call engineer when monitoring raises an alert (Opsgenie, being retired by Atlassian).", "XXXX", "Usually a separate tool such as PagerDuty or Grafana OnCall."]
 ]},
-{id:"confluence", name:"Confluence", sub:"Wiki and documentation", dc:"Data Center read-only from 28 Mar 2029", oss:"XWiki", feats:[
-["c1","Structure","Spaces and page tree","Group documentation into spaces per team or product, with pages nested in a navigable tree.","N","P","N","GHES: one wiki per repository."],
-["c2","Editing","WYSIWYG editor","Edit pages visually like a word processor, without writing Markdown.","P","X","N",""],
-["c3","Editing","Real-time co-editing","Several people edit the same page at the same time and see each other's changes live.","X","X","N",""],
-["c4","Editing","Page templates","Start pages from a template such as meeting notes, decision log, retrospective or requirements.","P","X","N",""],
-["c5","Editing","Macros","Embed dynamic content: table of contents, live Jira issue lists, status lozenges, diagrams, charts.","P","P","N",""],
-["c6","Collaboration","Page and inline comments","Comment at the bottom of a page or on a highlighted sentence, with threads and resolve.","P","X","N",""],
-["c7","Collaboration","Page restrictions","Limit who can view or edit a single page or branch, separately from space permissions.","P","X","N",""],
-["c8","Content","History and compare","See every version of a page, compare two versions and restore an older one.","N","N","N",""],
-["c9","Content","Attachments and Office previews","Attach files to pages and preview Word, Excel, PowerPoint and PDF inline.","P","P","N",""],
-["c10","Content","Full-text search","Search all pages and attachment contents, filtered by space, label or author.","N","P","N",""],
-["c11","Content","Export to PDF or Word","Export a page or whole space to share outside the tool.","P","X","N",""],
-["c12","Migration","Confluence importer","Bring existing spaces, pages, attachments and history across automatically.","X","X","N","XWiki has a Confluence migrator. SharePoint is another common target."],
+{id:"confluence", fam:"Atlassian", name:"Confluence", sub:"Wiki and documentation", st:"Data Center read-only from 28 Mar 2029", eol:true, oss:"XWiki", feats:[
+["c1", "Structure", "Spaces and page tree", "Group documentation into spaces per team or product, with pages nested in a navigable tree.", "NPPN", "GHES: one wiki per repository."],
+["c2", "Editing", "WYSIWYG editor", "Edit pages visually like a word processor, without writing Markdown.", "PXPN", ""],
+["c3", "Editing", "Real-time co-editing", "Several people edit the same page at the same time and see each other's changes live.", "XXXN", ""],
+["c4", "Editing", "Page templates", "Start pages from a template such as meeting notes, decision log, retrospective or requirements.", "PXPN", ""],
+["c5", "Editing", "Macros", "Embed dynamic content: table of contents, live Jira issue lists, status lozenges, diagrams, charts.", "PPPN", ""],
+["c6", "Collaboration", "Page and inline comments", "Comment at the bottom of a page or on a highlighted sentence, with threads and resolve.", "PXXN", ""],
+["c7", "Collaboration", "Page restrictions", "Limit who can view or edit a single page or branch, separately from space permissions.", "PXXN", ""],
+["c8", "Content", "History and compare", "See every version of a page, compare two versions and restore an older one.", "NNNN", ""],
+["c9", "Content", "Attachments and Office previews", "Attach files to pages and preview Word, Excel, PowerPoint and PDF inline.", "PPPN", ""],
+["c10", "Content", "Full-text search", "Search all pages and attachment contents, filtered by space, label or author.", "NPPN", ""],
+["c11", "Content", "Export to PDF or Word", "Export a page or whole space to share outside the tool.", "PXXN", ""],
+["c12", "Migration", "Confluence importer", "Bring existing spaces, pages, attachments and history across automatically.", "XXXN", "XWiki has a Confluence migrator. SharePoint is another common target."]
 ]},
-{id:"bitbucket", name:"Bitbucket", sub:"Git hosting", dc:"Continues after 2029 with dual DC + Cloud licence", oss:"Gitea / Forgejo", feats:[
-["g1","Code","Git hosting, forks, LFS","Host Git repositories, fork them and store large binary files with Git LFS.","N","N","N",""],
-["g2","Review","Pull requests and reviews","Propose changes, review line by line, discuss and approve before merging.","N","N","N",""],
-["g3","Review","Branch permissions and merge checks","Protect branches and require approvals, passing builds or resolved tasks before merge.","N","N","N",""],
-["g4","Review","Code owners","Automatically request reviews from the owners of the files that changed.","P","N","N",""],
-["g5","Code","Code search","Search code across all repositories.","P","N","P",""],
-["g6","Code","Mirrors for remote sites","Read-only mirrors near remote offices so clones and fetches are fast (Smart Mirroring).","X","P","P","GHES: repository caching."],
-["g7","Security","Secret and code scanning","Find leaked secrets, vulnerable dependencies and security bugs in code automatically.","X","A","X","GHES: GitHub Advanced Security, extra licence."],
+{id:"bitbucket", fam:"Atlassian", name:"Bitbucket", sub:"Git hosting", st:"Continues after 2029 with dual DC + Cloud licence", eol:false, oss:"Gitea / Forgejo", feats:[
+["g1", "Code", "Git hosting, forks, LFS", "Host Git repositories, fork them and store large binary files with Git LFS.", "NNNN", ""],
+["g2", "Review", "Pull requests and reviews", "Propose changes, review line by line, discuss and approve before merging.", "NNNN", ""],
+["g3", "Review", "Branch permissions and merge checks", "Protect branches and require approvals, passing builds or resolved tasks before merge.", "NNNN", ""],
+["g4", "Review", "Code owners", "Automatically request reviews from the owners of the files that changed.", "PNNN", ""],
+["g5", "Code", "Code search", "Search code across all repositories.", "PNNP", ""],
+["g6", "Code", "Mirrors for remote sites", "Read-only mirrors near remote offices so clones and fetches are fast (Smart Mirroring).", "XPNP", "GHES: repository caching. GitLab: Geo replication (Premium)."],
+["g7", "Security", "Secret and code scanning", "Find leaked secrets, vulnerable dependencies and security bugs in code automatically.", "XAAX", "GHES: GitHub Advanced Security, extra licence. GitLab: security scanning needs Ultimate."]
 ]},
-{id:"bamboo", name:"Bamboo", sub:"CI/CD", dc:"Data Center read-only from 28 Mar 2029", oss:"Jenkins", feats:[
-["b1","Build","Pipelines as code","Keep the build definition in the repository (Bamboo Specs) so it is versioned with the code.","N","N","N",""],
-["b2","Build","Self-hosted agents","Run builds on your own servers, including Windows, Linux and macOS machines.","N","N","N",""],
-["b3","Build","Parallel and matrix builds","Run many jobs at once, for example the same tests across several OS or language versions.","N","N","N",""],
-["b4","Build","Test result reporting","See which tests failed per build and how results trend over time.","N","P","N",""],
-["b5","Deploy","Deployment projects and environments","Promote a build through environments such as dev, test and production with a history per environment.","N","N","P",""],
-["b6","Deploy","Deployment approvals","Require a person to approve before deploying to a protected environment.","N","N","P",""],
-["b7","Deploy","Secrets management","Store passwords and keys securely and inject them into builds without exposing them in logs.","N","N","P",""],
-["b8","Migration","Automated plan conversion","Convert existing Bamboo plans into the new pipeline format with a tool instead of by hand.","X","N","X","GitHub Actions Importer converts Bamboo plans."],
+{id:"bamboo", fam:"Atlassian", name:"Bamboo", sub:"CI/CD", st:"Data Center read-only from 28 Mar 2029", eol:true, oss:"Jenkins", feats:[
+["b1", "Build", "Pipelines as code", "Keep the build definition in the repository (Bamboo Specs) so it is versioned with the code.", "NNNN", ""],
+["b2", "Build", "Self-hosted agents", "Run builds on your own servers, including Windows, Linux and macOS machines.", "NNNN", ""],
+["b3", "Build", "Parallel and matrix builds", "Run many jobs at once, for example the same tests across several OS or language versions.", "NNNN", ""],
+["b4", "Build", "Test result reporting", "See which tests failed per build and how results trend over time.", "NPNN", ""],
+["b5", "Deploy", "Deployment projects and environments", "Promote a build through environments such as dev, test and production with a history per environment.", "NNNP", ""],
+["b6", "Deploy", "Deployment approvals", "Require a person to approve before deploying to a protected environment.", "NNNP", ""],
+["b7", "Deploy", "Secrets management", "Store passwords and keys securely and inject them into builds without exposing them in logs.", "NNNP", ""],
+["b8", "Migration", "Automated plan conversion", "Convert existing Bamboo plans into the new pipeline format with a tool instead of by hand.", "XNXX", "GitHub Actions Importer converts Bamboo plans."]
 ]},
-{id:"crowd", name:"Crowd", sub:"Users and single sign-on", dc:"Data Center read-only from 28 Mar 2029", oss:"Keycloak", feats:[
-["u1","Identity","LDAP or Active Directory","Use existing company accounts and groups from your directory.","N","N","N",""],
-["u2","Identity","SAML single sign-on","Log in once with the company identity provider and access every tool.","P","N","N","ADO Server: Windows auth, or SAML via AD FS."],
-["u3","Identity","Multi-factor authentication","Require a second factor such as an authenticator app at login.","P","P","N","Usually handled by your identity provider."],
-["u4","Identity","One directory for many apps","A central user store that several applications authenticate against.","X","X","N","Most companies replace Crowd with Entra ID or AD FS."],
+{id:"crowd", fam:"Atlassian", name:"Crowd", sub:"Users and single sign-on", st:"Data Center read-only from 28 Mar 2029", eol:true, oss:"Keycloak", feats:[
+["u1", "Identity", "LDAP or Active Directory", "Use existing company accounts and groups from your directory.", "NNNN", ""],
+["u2", "Identity", "SAML single sign-on", "Log in once with the company identity provider and access every tool.", "PNNN", "ADO Server: Windows auth, or SAML via AD FS."],
+["u3", "Identity", "Multi-factor authentication", "Require a second factor such as an authenticator app at login.", "PNNN", "Usually handled by your identity provider."],
+["u4", "Identity", "One directory for many apps", "A central user store that several applications authenticate against.", "XXXN", "Most companies replace Crowd with Entra ID or AD FS."]
 ]},
-{id:"apps", name:"Marketplace apps", sub:"Tempo, ScriptRunner, Xray…", dc:"New DC app sales stopped 30 Mar 2026; apps end with DC", oss:"Various", feats:[
-["m1","Popular apps","Tempo Timesheets","Time tracking, timesheets, approvals and cost reports on top of Jira.","P","X","N","OpenProject has time and cost reporting built in."],
-["m2","Popular apps","ScriptRunner","Custom scripts for workflows, listeners, scheduled jobs and advanced JQL functions.","P","P","P","GHES: GitHub Actions. ADO: service hooks and extensions."],
-["m3","Popular apps","Xray or Zephyr","Test cases, test plans and executions linked to requirements and defects.","A","X","P","ADO: Test Plans, extra licence. OSS option: Kiwi TCMS."],
-["m4","Popular apps","Structure or BigPicture","Portfolio views, custom hierarchies, Gantt charts and resource planning across projects.","P","X","P",""],
-["m5","Popular apps","eazyBI","Advanced reports and BI dashboards built from Jira data.","N","X","P","ADO: Power BI through Analytics OData."],
-["m6","Popular apps","draw.io or Gliffy","Draw diagrams inside wiki pages and issues.","P","P","N","GHES and ADO render Mermaid diagrams in Markdown."],
-["m7","Popular apps","Jira Misc Workflow Extensions","Extra workflow conditions, validators and post-functions.","P","X","P",""],
-["m8","Popular apps","Portfolio or Advanced Roadmaps","Plans across teams with capacity, releases and scenarios (built into Jira DC).","P","X","P",""],
+{id:"apps", fam:"Atlassian", name:"Marketplace apps", sub:"Tempo, ScriptRunner, Xray\u2026", st:"New DC app sales stopped 30 Mar 2026; apps end with DC", eol:true, oss:"Various", feats:[
+["m1", "Popular apps", "Tempo Timesheets", "Time tracking, timesheets, approvals and cost reports on top of Jira.", "PXPN", "OpenProject has time and cost reporting built in."],
+["m2", "Popular apps", "ScriptRunner", "Custom scripts for workflows, listeners, scheduled jobs and advanced JQL functions.", "PPPP", "GHES: GitHub Actions. ADO: service hooks and extensions."],
+["m3", "Popular apps", "Xray or Zephyr", "Test cases, test plans and executions linked to requirements and defects.", "AXAP", "ADO: Test Plans, extra licence. OSS option: Kiwi TCMS."],
+["m4", "Popular apps", "Structure or BigPicture", "Portfolio views, custom hierarchies, Gantt charts and resource planning across projects.", "PXPP", ""],
+["m5", "Popular apps", "eazyBI", "Advanced reports and BI dashboards built from Jira data.", "NXPP", "ADO: Power BI through Analytics OData."],
+["m6", "Popular apps", "draw.io or Gliffy", "Draw diagrams inside wiki pages and issues.", "PPNN", "GHES and ADO render Mermaid diagrams in Markdown."],
+["m7", "Popular apps", "Jira Misc Workflow Extensions", "Extra workflow conditions, validators and post-functions.", "PXXP", ""],
+["m8", "Popular apps", "Portfolio or Advanced Roadmaps", "Plans across teams with capacity, releases and scenarios (built into Jira DC).", "PXPP", ""]
 ]},
+{id:"jenkins", fam:"CI/CD & code", name:"Jenkins", sub:"CI/CD server", st:"Active open source. Teams move to cut plugin upkeep", eol:false, oss:"Woodpecker / Tekton", feats:[
+["jenkins1", "Pipelines", "Pipelines as code (Jenkinsfile)", "Keep the build and deploy pipeline in the repository as declarative or scripted code.", "NNNN", ""],
+["jenkins2", "Pipelines", "Shared libraries and templates", "Reuse pipeline steps across hundreds of jobs from one central library.", "NNNN", "ADO templates, GitHub reusable workflows, GitLab CI components."],
+["jenkins3", "Pipelines", "Parameterised and manual builds", "Start a pipeline by hand with inputs such as environment or version.", "NNNN", ""],
+["jenkins4", "Pipelines", "Scheduled and triggered builds", "Run on a timer, on commit, or when another job finishes.", "NNNN", ""],
+["jenkins5", "Pipelines", "Matrix builds", "Run the same job across many OS, JDK or browser versions in parallel.", "NNNN", ""],
+["jenkins6", "Agents", "Agents with labels", "Route jobs to specific build machines (Windows, GPU, macOS) by label.", "NNNN", ""],
+["jenkins7", "Agents", "Credentials store", "Keep passwords, keys and certificates encrypted and inject them into jobs.", "NNNP", ""],
+["jenkins8", "Reporting", "Test and coverage reports", "Show test results and coverage trends per build.", "NPNP", "GitHub: needs a marketplace action for rich reports."],
+["jenkins9", "Ecosystem", "Plugin ecosystem", "Extend with community plugins for almost any tool or cloud.", "PPPP", "On GHES, public actions need GitHub Connect or a synced copy."],
+["jenkins10", "Migration", "Automated pipeline conversion", "Convert existing Jenkins jobs to the new pipeline format with a tool.", "XNPX", "GitHub Actions Importer converts Jenkins. GitLab offers a migration guide."]
+]},
+{id:"gitlab", fam:"CI/CD & code", name:"GitLab Self-Managed", sub:"Code, CI/CD, issues", st:"Active. Moves are usually for consolidation", eol:false, oss:"Gitea / Forgejo", feats:[
+["gitlab1", "Code", "Git repositories and merge requests", "Host repositories and review changes before merge.", "NNNN", ""],
+["gitlab2", "Pipelines", "Integrated CI/CD", "Pipelines defined in .gitlab-ci.yml with runners, stages and environments.", "NNNN", "Open source: Forgejo Actions or Woodpecker."],
+["gitlab3", "Planning", "Issues, epics and boards", "Plan work with issues, epics, milestones and boards.", "NPNP", ""],
+["gitlab4", "Packages", "Container and package registry", "Store Docker images and packages next to the code.", "PNNN", "ADO Server has no container registry."],
+["gitlab5", "Security", "Security scanning (SAST, DAST, dependencies)", "Scan every merge request for vulnerabilities (GitLab Ultimate).", "XAAP", "ADO Server: no native scanning; GitHub: Advanced Security licence."],
+["gitlab6", "Docs", "Project and group wikis", "Documentation next to the code.", "NPNP", ""],
+["gitlab7", "Deploy", "Environments and deployment tracking", "See what version runs where, with protected environments.", "NNNP", ""],
+["gitlab8", "Operations", "Geo replication and DR", "Read-only secondary sites for remote offices and disaster recovery.", "PPNX", ""],
+["gitlab9", "Migration", "Migration tooling", "Move repositories, issues and merge requests with a tool.", "PPNN", "Gitea and Forgejo import GitLab issues and MRs. GitHub needs a services-led migration."]
+]},
+{id:"teamcity", fam:"CI/CD & code", name:"TeamCity", sub:"CI/CD server", st:"Active (JetBrains). Moves are usually for consolidation", eol:false, oss:"Jenkins", feats:[
+["teamcity1", "Pipelines", "Build configurations as code (Kotlin DSL)", "Define builds in versioned code instead of the UI.", "NNNN", ""],
+["teamcity2", "Pipelines", "Build chains and snapshot dependencies", "Link builds so downstream jobs use exactly the same sources.", "NPNP", ""],
+["teamcity3", "Pipelines", "Artifact dependencies", "Pass build outputs from one configuration to another.", "NPNN", ""],
+["teamcity4", "Agents", "Agent pools", "Group build agents and assign them to projects.", "NNNN", ""],
+["teamcity5", "Quality", "Flaky test detection", "Spot tests that pass and fail without code changes.", "PPPP", ""],
+["teamcity6", "Quality", "Pre-tested commits", "Run a build on changes before they reach the main branch.", "NNNN", "All targets do this through pull or merge request checks."],
+["teamcity7", "Migration", "Automated conversion", "Convert TeamCity projects with a tool.", "XXXX", "Manual rewrite on every target."]
+]},
+{id:"vcs", fam:"CI/CD & code", name:"SVN / Perforce", sub:"Centralised version control", st:"Active. Moves are usually to standardise on Git", eol:false, oss:"Gitea / Forgejo", feats:[
+["vcs1", "Versioning", "File locking", "Lock binary files so only one person edits them at a time.", "NPPP", "ADO: TFVC or Git LFS locks. Others: Git LFS locks."],
+["vcs2", "Versioning", "Very large repositories and binaries", "Handle huge repos and assets such as game art or CAD files.", "PPPP", "Perforce is strongest here; Git needs LFS and care."],
+["vcs3", "Versioning", "Path-level permissions", "Allow or deny access to individual folders.", "NXPX", "ADO: TFVC supports folder permissions."],
+["vcs4", "Versioning", "Branching and merging", "Create and merge branches quickly.", "NNNN", "Git branching is far lighter than SVN or Perforce."],
+["vcs5", "Review", "Code review", "Review changes before they are committed or merged.", "NNNN", ""],
+["vcs6", "Migration", "History migration to Git", "Bring full commit history across.", "PPPP", "Use git-svn or git-p4; test on a copy first."]
+]},
+{id:"tfs", fam:"CI/CD & code", name:"TFS / older Azure DevOps Server", sub:"Microsoft ALM on-prem", st:"Old versions are out of support; upgrade or migrate", eol:true, oss:"Gitea + Jenkins", feats:[
+["tfs1", "Upgrade", "Upgrade in place", "Move to the current release without changing tool.", "NXXX", ""],
+["tfs2", "Code", "TFVC repositories", "Centralised version control inside TFS.", "NXXX", "GitHub and GitLab need TFVC converted to Git."],
+["tfs3", "Planning", "Work items with full history", "Keep boards, backlogs and history.", "NPPP", "Moving work items off ADO needs scripts or third-party tools."],
+["tfs4", "Pipelines", "Classic and XAML builds", "Older build and release definitions.", "PPPP", "Rewrite as YAML pipelines."],
+["tfs5", "Test", "Test Plans", "Manual test plans and runs.", "AXAX", ""],
+["tfs6", "Migration", "Migration tooling", "Official tools to move repos and pipelines.", "NPPP", "GitHub Actions Importer converts Azure DevOps pipelines."]
+]},
+{id:"alm", fam:"ALM & test", name:"OpenText ALM / Quality Center", sub:"Test and quality management", st:"Active. Moves are usually to cut licence cost", eol:false, oss:"Kiwi TCMS", feats:[
+["alm1", "Requirements", "Requirements management", "Capture requirements and track their coverage by tests.", "PXAP", ""],
+["alm2", "Testing", "Test plan and test lab", "Design manual tests and run them in test sets.", "AXAN", "ADO: Test Plans licence. GitLab: Ultimate."],
+["alm3", "Testing", "Defects linked to tests", "Raise a defect from a failed step, linked to the test and requirement.", "APAN", ""],
+["alm4", "Testing", "Automated test results", "Import results from automated suites.", "NPNN", ""],
+["alm5", "Reporting", "Traceability and coverage reports", "Requirement to test to defect coverage matrix.", "AXAP", ""],
+["alm6", "Compliance", "Approvals and e-signatures", "Signed approvals for regulated industries (FDA, GxP).", "XXPX", "GitLab: MR approvals with re-authentication (Ultimate)."],
+["alm7", "Compliance", "Audit trail", "Who changed what, for audits.", "NNNP", ""]
+]},
+{id:"elm", fam:"ALM & test", name:"IBM ELM / Rational", sub:"DOORS, EWM, ETM", st:"Active. Moves are usually to modernise", eol:false, oss:"Tuleap", feats:[
+["elm1", "Requirements", "Requirements with baselines (DOORS)", "Formal requirements with versions, baselines and attributes.", "XXPP", ""],
+["elm2", "Traceability", "End-to-end traceability", "Link requirement, design, code, test and defect.", "PXAN", "Tuleap is built for regulated traceability."],
+["elm3", "Change", "Change and work management (EWM)", "Plan and track changes with workflows.", "NPNN", ""],
+["elm4", "Configuration", "Global configurations and variants", "Manage product variants and streams across artefacts.", "XXXX", ""],
+["elm5", "Reporting", "Document generation", "Generate formal specification and test documents.", "PXXP", ""],
+["elm6", "Compliance", "Safety standards (ISO 26262, DO-178C)", "Evidence and process for safety-critical work.", "XXPP", ""]
+]},
+{id:"testrail", fam:"ALM & test", name:"TestRail", sub:"Test case management", st:"Active. Moves are usually for consolidation", eol:false, oss:"Kiwi TCMS", feats:[
+["testrail1", "Testing", "Test cases and suites", "Write reusable test cases organised in suites and sections.", "AXAN", ""],
+["testrail2", "Testing", "Test runs and milestones", "Run tests per release and track progress.", "AXAN", ""],
+["testrail3", "Automation", "Automated results via API", "Push results from CI pipelines.", "APAN", ""],
+["testrail4", "Reporting", "Reports and coverage", "Progress, defect and coverage reports.", "AXAP", ""],
+["testrail5", "Integration", "Link to issues", "Open a bug from a failed test.", "APAP", ""]
+]},
+{id:"align", fam:"ALM & test", name:"Jira Align", sub:"Enterprise agile / SAFe", st:"Atlassian, cloud-first. Check your hosting option", eol:true, oss:"OpenProject", feats:[
+["align1", "Scaled agile", "PI planning and program boards", "Plan program increments across agile release trains.", "PXPX", ""],
+["align2", "Portfolio", "Portfolio and value streams", "Themes, epics and funding across the portfolio.", "PXPP", ""],
+["align3", "Portfolio", "OKRs", "Objectives and key results linked to work.", "XXAX", "GitLab: OKRs need Ultimate."],
+["align4", "Finance", "Capacity and financial planning", "Budget and capacity by team and value stream.", "XXXX", ""],
+["align5", "Roll-up", "Roll-up from team tools", "Aggregate progress from team-level boards.", "PPPP", ""]
+]},
+{id:"artifacts", fam:"Artifacts & quality", name:"JFrog Artifactory / Sonatype Nexus", sub:"Binary and package repositories", st:"Active. Most teams keep these and integrate", eol:false, oss:"Nexus Community / Harbor", feats:[
+["artifacts1", "Packages", "Maven, npm, NuGet and PyPI", "Host the main language package types.", "NPNN", "GitHub Packages has no PyPI."],
+["artifacts2", "Packages", "Docker / OCI registry", "Store container images.", "XNNN", "ADO Server has no container registry."],
+["artifacts3", "Packages", "Helm, Go, Conan, Debian, RPM", "Less common package formats.", "XPPN", ""],
+["artifacts4", "Packages", "Generic binaries", "Store any file (installers, zips).", "NPNN", "ADO: Universal Packages."],
+["artifacts5", "Proxy", "Remote / proxy repositories", "Cache Maven Central, npmjs and Docker Hub inside the network.", "NXPN", "ADO: upstream sources."],
+["artifacts6", "Proxy", "Virtual repositories", "One URL that aggregates several repositories.", "PXPN", ""],
+["artifacts7", "Operations", "Retention and cleanup", "Automatically delete old snapshots and images.", "NPNN", ""],
+["artifacts8", "Operations", "Multi-site replication", "Replicate artefacts to other data centres.", "XXNP", "GitLab: Geo (Premium)."],
+["artifacts9", "Security", "Vulnerability scanning (Xray, Lifecycle)", "Scan packages and images for known CVEs.", "XAAP", "Open source: Trivy in Harbor."]
+]},
+{id:"sonar", fam:"Artifacts & quality", name:"SonarQube", sub:"Code quality", st:"Active. Most teams keep it and integrate", eol:false, oss:"SonarQube Community / Semgrep", feats:[
+["sonar1", "Quality", "Code quality rules", "Find bugs, code smells and maintainability issues.", "XXPN", ""],
+["sonar2", "Quality", "Quality gates on pull requests", "Block merges that fail quality thresholds.", "PPPN", ""],
+["sonar3", "Quality", "Coverage tracking", "Test coverage per branch and trend.", "PXNN", ""],
+["sonar4", "Security", "Security hotspots and SAST", "Find security issues in code.", "XAAP", ""],
+["sonar5", "Reporting", "Technical debt dashboards", "Debt, ratings and trends per project.", "XXPN", ""],
+["sonar6", "Languages", "30+ languages", "Broad language support including legacy (COBOL, ABAP).", "XPPN", "GitHub CodeQL covers about 10 languages."]
+]},
+{id:"itsm", fam:"ITSM & docs", name:"ServiceNow / BMC Helix (Remedy)", sub:"IT service management", st:"Active. Usually kept and integrated with DevOps", eol:false, oss:"GLPI / iTop", feats:[
+["itsm1", "Service desk", "Self-service portal", "Users raise requests and incidents on a web portal.", "XXXN", ""],
+["itsm2", "ITIL", "Incident, problem and change", "Full ITIL processes.", "XXPN", ""],
+["itsm3", "ITIL", "CMDB", "Configuration items and service maps.", "XXXN", ""],
+["itsm4", "Operations", "SLAs and escalations", "Response targets with automatic escalation.", "XXPN", ""],
+["itsm5", "Operations", "Approvals and CAB", "Change advisory board approvals.", "XXXP", ""],
+["itsm6", "DevOps", "Change gate for deployments", "Pipelines wait for an approved change before deploying.", "NPPP", "ADO has an official ServiceNow change gate. GitHub and GitLab use integrations."],
+["itsm7", "DevOps", "Link incidents to code changes", "See which deployment caused an incident.", "PPNP", ""]
+]},
+{id:"wiki", fam:"ITSM & docs", name:"SharePoint / MediaWiki", sub:"Wikis and team sites", st:"Active. Moves are usually to keep docs with code", eol:false, oss:"XWiki / BookStack", feats:[
+["wiki1", "Structure", "Sites and page hierarchy", "Organise pages by team or product.", "NPPN", ""],
+["wiki2", "Editing", "Rich visual editing", "Edit pages like a document.", "PXPN", ""],
+["wiki3", "Editing", "Co-authoring", "Edit together in real time.", "XXXN", ""],
+["wiki4", "Access", "Page-level permissions", "Restrict individual pages.", "PXXN", ""],
+["wiki5", "Content", "Office documents", "Store and preview Word, Excel and PowerPoint.", "PPPN", ""],
+["wiki6", "Content", "Search", "Search across pages and documents.", "NPPN", ""],
+["wiki7", "Migration", "Import from existing wiki", "Bring existing pages across.", "PPPP", "MediaWiki and SharePoint exports usually need conversion to Markdown."]
+]}
 ];
-const EXAMPLE = {tools:["jira","confluence"], targets:["ado","gh","oss"], imp:{j1:3,j2:3,j4:3,j10:3,j11:2,j14:3,j15:2,j18:2,j20:2,j22:3,j23:2,j26:1,j28:3,j29:2,j33:3,c1:3,c2:2,c5:1,c8:3,c10:3,c12:2}};
 
-function lsGet(){ try{ return localStorage.getItem("aep-state"); }catch(e){ return null; } }
+const EXAMPLE = {tools:["jira","confluence","jenkins"], targets:["ado","gh","gl","oss"], imp:{jenkins1:3,jenkins2:3,jenkins6:3,jenkins7:3,jenkins8:2,jenkins10:2,j1:3,j2:3,j4:3,j10:3,j11:2,j14:3,j15:2,j18:2,j20:2,j22:3,j23:2,j26:1,j28:3,j29:2,j33:3,c1:3,c2:2,c5:1,c8:3,c10:3,c12:2}};
+
+function lsGet(){ try{ return localStorage.getItem("dpp-state"); }catch(e){ return null; } }
 function load(){ try{ const s = lsGet(); const o = s && JSON.parse(s); return o && o.targets ? o : null; }catch(e){ return null; } }
 let state = load() || structuredClone(EXAMPLE);
 let isExample = !load();
 let analysed = false, summary = "";
-function save(){ isExample = false; try{ localStorage.setItem("aep-state", JSON.stringify(state)); }catch(e){} }
+function save(){ isExample = false; try{ localStorage.setItem("dpp-state", JSON.stringify(state)); }catch(e){} }
 function changed(){ save(); if(analysed) $("#stale").hidden = false; }
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const rating = (f,k) => k==="dc" ? "N" : f[TK[k].col];
+const rating = (f,k) => k==="dc" ? "N" : f[4][TK[k].i];
 const tname = (k,t) => k==="oss" && t ? `${t.oss} (open source)` : TK[k].name;
 const pct = x => x==null ? "–" : Math.round(x*100)+"%";
 
 function cards(el, list, chosen, key){
   $(el).innerHTML = list.map(t => `<div class="tool"><input type="checkbox" id="${key}-${t.id||t.k}" value="${t.id||t.k}" ${chosen.includes(t.id||t.k)?"checked":""}>
-    <label for="${key}-${t.id||t.k}"><span class="t">${t.name}</span><span class="s">${esc(t.sub)}</span>${t.dc?`<span class="dc ${t.id==="bitbucket"?"ok":""}">${esc(t.dc)}</span>`:""}</label></div>`).join("");
+    <label for="${key}-${t.id||t.k}"><span class="t">${t.name}</span><span class="s">${esc(t.sub)}</span>${t.st?`<span class="dc ${t.eol?"":"ok"}">${esc(t.st)}</span>`:""}</label></div>`).join("");
 }
-function renderPickers(){ cards("#tools", TOOLS, state.tools, "tool"); cards("#targets", TARGETS, state.targets, "target"); }
+function renderPickers(){
+  const fams = [...new Set(TOOLS.map(t=>t.fam))];
+  $("#tools").innerHTML = fams.map(f => `<div class="fam"><div class="cat">${f}</div><div class="tools" id="fam-${f.replace(/\W/g,"")}"></div></div>`).join("");
+  for(const f of fams) cards("#fam-"+f.replace(/\W/g,""), TOOLS.filter(t=>t.fam===f), state.tools, "tool");
+  cards("#targets", TARGETS, state.targets, "target");
+}
 $("#tools").onchange = e => { const v=e.target.value; state.tools = e.target.checked ? [...state.tools,v] : state.tools.filter(x=>x!==v); changed(); renderFeatures(); };
 $("#targets").onchange = e => { const v=e.target.value; state.targets = e.target.checked ? [...state.targets,v] : state.targets.filter(x=>x!==v); changed(); renderFeatures(); };
 
@@ -327,17 +450,17 @@ function renderFeatures(){
   sel.map(t => {
     let cat = "", rows = "";
     for(const f of t.feats){
-      const [id,c,name,d,,,,note] = f;
+      const [id,c,name,d,,note] = f;
       if(c!==cat){ rows += `<div class="cat">${c}</div>`; cat=c; }
       const v = state.imp[id]||0;
       rows += `<div class="row ${v?"":"unused"}">
         <div><div class="f">${esc(name)}</div><div class="d">${esc(d)}</div>
-          ${tg.length?`<div class="ratings">${tg.map(x=>`<span class="pill r-${rating(f,x.k)}"><i>${x.k==="oss"?esc(t.oss):x.k==="ado"?"Azure DevOps":"GitHub ES"}</i>${RL[rating(f,x.k)]}</span>`).join("")}</div>`:""}
+          ${tg.length?`<div class="ratings">${tg.map(x=>`<span class="pill r-${rating(f,x.k)}"><i>${x.k==="oss"?esc(t.oss):x.short}</i>${RL[rating(f,x.k)]}</span>`).join("")}</div>`:""}
           ${note?`<div class="note">${esc(note)}</div>`:""}</div>
         <div class="imp" role="radiogroup" aria-label="Importance of ${esc(name)}">${IMP.map((lab,i)=>`<input type="radio" name="imp-${id}" id="imp-${id}-${i}" value="${i}" ${v===i?"checked":""}><label for="imp-${id}-${i}">${lab}</label>`).join("")}</div>
       </div>`;
     }
-    return `<div class="group"><header><h3>${t.name}</h3><span class="oss">${esc(t.dc)}</span></header>${rows}</div>`;
+    return `<div class="group"><header><h3>${t.name}</h3><span class="oss">${esc(t.st)}</span></header>${rows}</div>`;
   }).join("");
 }
 $("#features").addEventListener("change", e => {
@@ -388,15 +511,15 @@ function analyse(){
     <h2>${TK[best].name}</h2>
     <p>${verdict}. It covers ${pct(B.pct)} of what you use across ${used.length} feature${used.length>1?"s":""}${B.gaps.length?`, but ${B.gaps.length} must-have${B.gaps.length>1?"s are":" is"} missing`:", with no must-have gaps"}.
     ${mixed ? ` Your products fit best on different platforms: ${wins.map(p=>`${p.t.name} → ${tname(p.win,p.t)}`).join(", ")}. Weigh running one platform against the better fit of a mix.` : ""}</p>
-    <div class="bars">${order.map(k => `<div class="bar ${k===best?"best":k==="dc"?"base":""}"><div class="top"><span>${TK[k].name}${k==="dc"?" (baseline, ends 2029)":""}</span><b>${pct(tot[k].pct)}</b></div>
+    <div class="bars">${order.map(k => `<div class="bar ${k===best?"best":k==="dc"?"base":""}"><div class="top"><span>${TK[k].name}${k==="dc"?" (baseline)":""}</span><b>${pct(tot[k].pct)}</b></div>
       <div class="track"><div class="fill" style="width:${Math.round(tot[k].pct*100)}%"></div></div>
-      <div class="meta">${k==="dc"?"What you have today. Not purchasable for new customers and read-only from 28 Mar 2029.":`${tot[k].gaps.length?`<span class="g">${tot[k].gaps.length} must-have gap${tot[k].gaps.length>1?"s":""}</span>`:"No must-have gaps"} · ${tot[k].partial.length} must-have only partly covered`}</div></div>`).join("")}</div>`;
+      <div class="meta">${k==="dc"?"What you have today. Atlassian Data Center products still become read-only on 28 Mar 2029.":`${tot[k].gaps.length?`<span class="g">${tot[k].gaps.length} must-have gap${tot[k].gaps.length>1?"s":""}</span>`:"No must-have gaps"} · ${tot[k].partial.length} must-have only partly covered`}</div></div>`).join("")}</div>`;
 
   $("#matrix").innerHTML = `<table class="grid"><thead><tr><th>Product</th>${tg.map(t=>`<th>${t.name}</th>`).join("")}<th>Best fit</th></tr></thead><tbody>
-    ${per.map(p => `<tr><td>${p.t.name}</td>${tg.map(t=>`<td class="num ${p.win===t.k?"win":""}">${pct(p.r[t.k].pct)}${p.r[t.k].gaps.length?` <span class="pill r-X">${p.r[t.k].gaps.length} gap</span>`:""}</td>`).join("")}<td>${p.win?tname(p.win,p.t):`<span class="muted">No features marked</span>`}</td></tr>`).join("")}
+    ${per.map(p => `<tr><td>${p.t.name}</td>${tg.map(t=>`<td class="num ${p.win===t.k?"win":""}">${pct(p.r[t.k].pct)}${p.r[t.k].gaps.length?` <span class="pill r-X">${p.r[t.k].gaps.length} gap</span>`:""}</td>`).join("")}<td>${p.win?tname(p.win,p.t)+(p.t.eol?"":` <span class="muted">or keep and integrate</span>`):`<span class="muted">No features marked</span>`}</td></tr>`).join("")}
     <tr class="total"><td>Overall</td>${tg.map(t=>`<td class="num ${t.k===best?"win":""}">${pct(tot[t.k].pct)}</td>`).join("")}<td>${TK[best].name}</td></tr></tbody></table>`;
 
-  const li = (f,cls) => `<li><b>${esc(f[2])}</b> <span class="muted">(${f.tool.name})</span> <span class="pill ${cls}">${RL[cls.slice(2)]}</span>${f[7]?`<br><span class="muted">${esc(f[7])}</span>`:""}</li>`;
+  const li = (f,cls) => `<li><b>${esc(f[2])}</b> <span class="muted">(${f.tool.name})</span> <span class="pill ${cls}">${RL[cls.slice(2)]}</span>${f[5]?`<br><span class="muted">${esc(f[5])}</span>`:""}</li>`;
   $("#gaps").innerHTML = rank.map(k => { const x = tot[k], n = x.gaps.length + x.partial.length;
     return `<details ${k===best?"open":""}><summary>${TK[k].name} <span>${x.gaps.length} missing · ${x.partial.length} partial</span></summary>
       ${n ? `<ul class="gaps">${x.gaps.map(f=>li(f,"r-X")).join("")}${x.partial.map(f=>li(f,"r-"+rating(f,k))).join("")}</ul>` : `<p class="muted">Every must-have is built in.</p>`}</details>`; }).join("");
@@ -404,10 +527,10 @@ function analyse(){
   $("#mapping").innerHTML = `<table class="grid"><thead><tr><th>Feature</th><th>Importance</th>${dest.map(t=>`<th>${t.name}</th>`).join("")}</tr></thead><tbody>
     ${used.sort((a,b)=>state.imp[b[0]]-state.imp[a[0]]).map(f => `<tr><td><b>${esc(f[2])}</b><br><span class="muted">${f.tool.name}</span></td><td>${IMP[state.imp[f[0]]]}</td>${dest.map(t=>`<td><span class="pill r-${rating(f,t.k)}">${RL[rating(f,t.k)]}</span></td>`).join("")}</tr>`).join("")}</tbody></table>`;
 
-  summary = [`Atlassian Exit Planner: analysis`, `Products today: ${sel.map(t=>t.name).join(", ")}`, `Platforms compared: ${tg.map(t=>t.name).join(", ")}`, `Features in use: ${used.length}`, ``,
+  summary = [`DevOps Platform Planner: analysis`, `Tools today: ${sel.map(t=>t.name).join(", ")}`, `Platforms compared: ${tg.map(t=>t.name).join(", ")}`, `Features in use: ${used.length}`, ``,
     `Recommendation: ${TK[best].name} (${pct(B.pct)} fit, ${B.gaps.length} must-have gaps)`, ``,
-    `Overall fit:`, ...order.map(k => `- ${TK[k].name}: ${pct(tot[k].pct)}${k==="dc"?" (baseline, ends 28 Mar 2029)":`, ${tot[k].gaps.length} must-have gaps`}`), ``,
-    `Best fit per product:`, ...wins.map(p => `- ${p.t.name} -> ${tname(p.win,p.t)} (${pct(p.r[p.win].pct)})`), ``,
+    `Overall fit:`, ...order.map(k => `- ${TK[k].name}: ${pct(tot[k].pct)}${k==="dc"?" (baseline)":`, ${tot[k].gaps.length} must-have gaps`}`), ``,
+    `Best fit per product:`, ...wins.map(p => `- ${p.t.name} -> ${tname(p.win,p.t)} (${pct(p.r[p.win].pct)})${p.t.eol?"":", or keep and integrate"}`), ``,
     `Must-have gaps on ${TK[best].name}:`, ...(B.gaps.length ? B.gaps.map(f=>`- ${f[2]} (${f.tool.name})`) : ["- none"]),
     `Must-haves only partly covered:`, ...(B.partial.length ? B.partial.map(f=>`- ${f[2]} (${f.tool.name})`) : ["- none"])].join("\n");
 
