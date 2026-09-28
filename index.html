@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atlassian Exit Planner</title>
+<meta name="description" content="Pick the Atlassian tools you run today, mark the features you use, and see which on-prem platform fits best.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#f3f5f7; --panel:#ffffff; --ink:#18222e; --ink-2:#4a5767; --ink-3:#7a8697;
+  --line:#dde2e8; --line-2:#c9d0d9; --accent:#1f5f8b; --accent-ink:#ffffff; --accent-soft:#e3eef6;
+  --ok:#1d7a46; --ok-soft:#dcf1e4; --warn:#9a6a00; --warn-soft:#fbefcf; --bad:#b3261e; --bad-soft:#f9dedc;
+  --addon:#7a4a9c; --addon-soft:#efe4f6;
+  --display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans",-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --ground:#10161d; --panel:#172029; --ink:#e6ebf0; --ink-2:#aab5c2; --ink-3:#7e8a98;
+  --line:#26313d; --line-2:#344252; --accent:#6aaede; --accent-ink:#0b1824; --accent-soft:#1a3347;
+  --ok:#6fcf97; --ok-soft:#173a28; --warn:#e6b84a; --warn-soft:#3a2f12; --bad:#f28b82; --bad-soft:#3d1c1a;
+  --addon:#c79be6; --addon-soft:#33243f;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#10161d; --panel:#172029; --ink:#e6ebf0; --ink-2:#aab5c2; --ink-3:#7e8a98;
+  --line:#26313d; --line-2:#344252; --accent:#6aaede; --accent-ink:#0b1824; --accent-soft:#1a3347;
+  --ok:#6fcf97; --ok-soft:#173a28; --warn:#e6b84a; --warn-soft:#3a2f12; --bad:#f28b82; --bad-soft:#3d1c1a;
+  --addon:#c79be6; --addon-soft:#33243f;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font:15px/1.5 var(--body);padding-inline:16px;padding-block:0 48px}
+.wrap{max-width:1240px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+header.top{padding-block:28px 20px;display:grid;gap:10px;border-bottom:1px solid var(--line)}
+.eyebrow{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+h1{font-size:clamp(28px,4vw,40px);font-weight:700;letter-spacing:-.01em}
+.lede{max-width:68ch;color:var(--ink-2);margin:0}
+.notice{display:flex;gap:10px;align-items:flex-start;background:var(--warn-soft);color:var(--ink);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);border-radius:6px;padding:10px 12px;font-size:13.5px;max-width:900px}
+.notice b{color:var(--warn)}
+.step{display:flex;align-items:baseline;gap:10px;margin:0 0 12px}
+.step .n{font:600 12px/1 var(--mono);color:var(--accent)}
+.step h2{font-size:21px;font-weight:600}
+section{margin-bottom:32px}
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.tool{position:relative}
+.tool input{position:absolute;opacity:0;pointer-events:none}
+.tool label{display:grid;gap:2px;padding:12px 14px;border:1px solid var(--line-2);border-radius:6px;background:var(--panel);cursor:pointer;height:100%}
+.tool label .t{font-weight:600}
+.tool label .s{font-size:12.5px;color:var(--ink-3)}
+.tool label .dc{font:500 11px/1.3 var(--mono);color:var(--bad);margin-top:4px}
+.tool label .dc.ok{color:var(--ok)}
+.tool input:checked+label{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.tool input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+button{font:500 13px/1 var(--body);color:var(--ink);background:var(--panel);border:1px solid var(--line-2);border-radius:5px;padding:8px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.group{background:var(--panel);border:1px solid var(--line);border-radius:8px;margin-bottom:18px;overflow:hidden}
+.group>header{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:space-between;align-items:baseline;padding:14px 16px;border-bottom:1px solid var(--line)}
+.group>header h3{font-size:18px;font-weight:600}
+.group>header .oss{font-size:12.5px;color:var(--ink-3)}
+.cat{font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding:14px 16px 6px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 18px;padding:10px 16px;border-top:1px solid var(--line)}
+.cat+.row{border-top:0}
+.row .f{font-weight:600;font-size:14.5px}
+.row .d{font-size:13.5px;color:var(--ink-2);max-width:70ch}
+.row .note{font-size:12.5px;color:var(--ink-3);margin-top:4px}
+.layout{padding-top:24px;max-width:1040px}
+.row .ratings{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.row.unused .ratings,.row.unused .note{opacity:.55}
+.pill{display:inline-flex;align-items:center;gap:5px;font:500 11.5px/1 var(--mono);padding:4px 7px;border-radius:4px;white-space:nowrap}
+.pill i{font-style:normal;color:var(--ink-3)}
+.r-N{background:var(--ok-soft);color:var(--ok)} .r-P{background:var(--warn-soft);color:var(--warn)}
+.r-A{background:var(--addon-soft);color:var(--addon)} .r-X{background:var(--bad-soft);color:var(--bad)}
+.imp{display:inline-flex;border:1px solid var(--line-2);border-radius:5px;overflow:hidden;align-self:start}
+.imp input{position:absolute;opacity:0;pointer-events:none}
+.imp label{font:500 12px/1 var(--body);padding:7px 9px;cursor:pointer;color:var(--ink-2);border-left:1px solid var(--line-2);white-space:nowrap}
+.imp label:first-of-type{border-left:0}
+.imp input:checked+label{background:var(--accent);color:var(--accent-ink)}
+.imp input:focus-visible+label{outline:2px solid var(--accent);outline-offset:-2px}
+@media (max-width:640px){.row{grid-template-columns:minmax(0,1fr)}}
+.empty{padding:24px;border:1px dashed var(--line-2);border-radius:8px;color:var(--ink-3);text-align:center}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px}
+.card+.card{margin-top:14px}
+.verdict .label{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.verdict h2{font-size:26px;margin:8px 0 6px}
+.verdict p{margin:0;color:var(--ink-2);font-size:14px}
+.bars{display:grid;gap:12px;margin-top:16px}
+.bar{display:grid;gap:4px}
+.bar .top{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.bar .top b{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.bar .track{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
+.bar .meta{font-size:12px;color:var(--ink-3)}
+.bar.best .fill{background:var(--ok)} .bar.base .fill{background:var(--ink-3)}
+.bar .meta .g{color:var(--bad);font-weight:600}
+.bars{display:grid;gap:14px;margin-top:18px}
+.results{display:grid;gap:16px}
+.card h3{font-size:17px;margin-bottom:12px}
+.scroll{overflow-x:auto}
+table.grid{border-collapse:collapse;font-size:13.5px;width:100%;min-width:520px}
+table.grid th{font:500 11px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:0 10px 8px 0;vertical-align:bottom}
+table.grid td{padding:9px 10px 9px 0;border-top:1px solid var(--line);vertical-align:top}
+table.grid td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.grid tr.total td{font-weight:600;border-top:2px solid var(--line-2)}
+td.win{color:var(--ok);font-weight:600}
+details{border-top:1px solid var(--line);padding-block:10px}
+details:first-of-type{border-top:0}
+summary{cursor:pointer;font-weight:600}
+summary span{font-weight:400;color:var(--ink-3);font-size:13px}
+ul.gaps{margin:10px 0 0;padding-left:18px;font-size:13.5px;color:var(--ink-2);display:grid;gap:6px}
+ul.gaps b{color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.muted{color:var(--ink-3);font-size:12.5px}
+.sample{font-size:12.5px;color:var(--accent);margin-bottom:12px}
+.stale{background:var(--warn-soft);color:var(--ink);border-radius:6px;padding:10px 12px;font-size:13.5px}
+.tool label .dc{font:500 11px/1.3 var(--mono);color:var(--bad);margin-top:4px}
+.tool label .dc.ok{color:var(--ok)}
+footer{margin-top:32px;border-top:1px solid var(--line);padding-top:16px;font-size:12.5px;color:var(--ink-3);max-width:90ch}
+textarea#copyfallback{width:100%;height:160px;margin-top:10px;font:12px/1.4 var(--mono);background:var(--ground);color:var(--ink);border:1px solid var(--line-2);border-radius:5px;padding:8px}
+@media (prefers-reduced-motion:reduce){.bar .fill{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">On-prem migration assessment</div>
+  <h1>Atlassian Exit Planner</h1>
+  <p class="lede">Choose the Atlassian products you run and the platforms you're considering, then mark how much each feature matters. Run the analysis to compare the platforms feature by feature and get a recommendation.</p>
+  <div class="notice"><b>Why now:</b><span>Jira Server support ended on 15 Feb 2024. Atlassian stopped selling Data Center to new customers on 30 Mar 2026, and Data Center goes read-only on 28 Mar 2029. Bitbucket is the only exception. Staying on Atlassian long term means moving to Cloud.</span></div>
+</header>
+
+<div class="layout">
+  <section>
+    <div class="step"><span class="n">STEP 1</span><h2>Which Atlassian products do you run today?</h2></div>
+    <div class="tools" id="tools"></div>
+  </section>
+
+  <section>
+    <div class="step"><span class="n">STEP 2</span><h2>Which platforms do you want to compare?</h2></div>
+    <div class="tools" id="targets"></div>
+  </section>
+
+  <section>
+    <div class="step"><span class="n">STEP 3</span><h2>Which features do you use, and how much do they matter?</h2></div>
+    <div class="toolbar">
+      <div class="legend">
+        <span><span class="pill r-N">Native</span> built in</span>
+        <span><span class="pill r-P">Partial</span> limited or workaround</span>
+        <span><span class="pill r-A">Add-on</span> extra product or licence</span>
+        <span><span class="pill r-X">None</span> not available</span>
+      </div>
+      <div class="actions"><button id="reset" type="button">Clear answers</button><button id="example" type="button">Load example</button></div>
+    </div>
+    <div id="features"></div>
+  </section>
+
+  <section>
+    <div class="step"><span class="n">STEP 4</span><h2>Analyse and compare</h2></div>
+    <div class="actions"><button class="primary" id="run" type="button">Run analysis</button><span class="muted" id="runmsg"></span></div>
+    <div class="results" id="results" hidden>
+      <div id="stale" class="stale" hidden>You changed your answers since this analysis. Run it again to update the results.</div>
+      <div class="card verdict" id="verdict"></div>
+      <div class="card"><h3>Fit by product</h3><div class="scroll" id="matrix"></div></div>
+      <div class="card"><h3>Must-have gaps per platform</h3><div id="gaps"></div></div>
+      <div class="card"><h3>Feature mapping</h3><p class="muted">Every feature you marked, and how each platform covers it.</p><div class="scroll" id="mapping"></div></div>
+      <div class="actions"><button class="primary" id="copy" type="button">Copy summary</button><span id="copymsg" class="muted" role="status"></span></div>
+    </div>
+  </section>
+
+  <footer>
+    Ratings reflect GitHub Enterprise Server 3.20, current Azure DevOps Server and the named open-source products (free editions), without third-party plugins unless marked Add-on. "Stay on Data Center" is your current baseline: it scores full marks but ends on 28 Mar 2029, so it is never recommended as a destination. Ratings are a general assessment, not vendor-certified. Check your Must-have items in a proof of concept. Scoring: Must = 3, Should = 2, Nice = 1; Native counts 100%, Partial or Add-on 50%, None 0%.
+  </footer>
+</div>
+</div>
+
+<script>
+const TARGETS = [
+  {k:"ado", name:"Azure DevOps Server", sub:"Microsoft, on-prem", col:4},
+  {k:"gh",  name:"GitHub Enterprise Server", sub:"GitHub, on-prem (3.20)", col:5},
+  {k:"oss", name:"Open-source stack", sub:"OpenProject, XWiki, Zammad, Jenkins…", col:6},
+  {k:"dc",  name:"Stay on Data Center", sub:"Baseline only, ends 28 Mar 2029", col:null},
+];
+const TK = Object.fromEntries(TARGETS.map(t => [t.k, t]));
+const RL = {N:"Native",P:"Partial",A:"Add-on",X:"None"};
+const RS = {N:1,P:.5,A:.5,X:0};
+const IMP = ["Not used","Nice","Should","Must"];
+const TOOLS = [
+{id:"jira", name:"Jira Software", sub:"Issues, boards, sprints", dc:"Data Center read-only from 28 Mar 2029", oss:"OpenProject", feats:[
+["j1","Work items","Custom issue types","Create your own item types beyond Bug and Story, such as Risk, Change Request or Spike, each with its own fields and screen.","N","P","N","GHES: organisation-level issue types, limited count."],
+["j2","Work items","Multi-level hierarchy","Nest work several levels deep (Initiative > Epic > Story > Sub-task) so progress rolls up from tasks to business goals.","N","P","N","GHES: sub-issues. Check they're enabled on your instance."],
+["j3","Work items","Typed issue links","Connect issues with named relationships such as 'blocks', 'is blocked by', 'duplicates' or 'relates to', and see them on both sides.","N","P","N",""],
+["j4","Work items","Custom fields","Add extra fields (customer, severity, environment, cost centre) to issues so every team captures the data it needs.","N","P","N","GHES: fields belong to a Project, not to the issue globally."],
+["j5","Work items","Rich field types","Use advanced field types: cascading select (Country > City), user pickers, multi-select lists, checkboxes and date-time.","N","P","P","GHES project fields: text, number, date, single-select, iteration."],
+["j6","Work items","Required fields and validation","Force a field to be filled or valid before an issue can be created or moved, for example 'Root cause' before closing a bug.","N","P","P","GHES issue forms apply at creation only."],
+["j7","Work items","Components or areas","Split a project into product areas or modules, each with its own default owner, for filtering and reporting.","N","P","P",""],
+["j8","Work items","Fix versions and releases","Assign issues to a release version, track what is left to ship and publish release notes from it.","P","P","N",""],
+["j9","Work items","Bulk edit and move","Change fields, status or assignee on hundreds of issues at once, or move them between projects.","N","P","N",""],
+["j10","Workflow","Custom statuses","Define your own steps such as In QA, UAT or Awaiting Approval instead of just To do / In progress / Done.","N","P","N","GHES: a Status field only, no state machine."],
+["j11","Workflow","Transition rules","Control who can move an issue and when: conditions (only QA can close), validators (field required) and post-functions (auto-assign).","P","X","P","ADO: work item rules. OpenProject: allowed transitions per role."],
+["j12","Workflow","Workflow per issue type","Give different item types different flows, for example bugs go through triage while stories go through design review.","N","X","N",""],
+["j13","Workflow","Approval steps","Require a named approver to sign off before work moves on, with the approval recorded on the issue.","P","X","X",""],
+["j14","Boards and planning","Scrum board and backlog","Plan sprints from a ranked backlog and track them on a sprint board with columns per status.","N","N","P",""],
+["j15","Boards and planning","Kanban board","Visualise continuous flow of work across columns without fixed sprints.","N","N","N",""],
+["j16","Boards and planning","WIP limits and swimlanes","Cap how many items sit in a column and split the board into horizontal lanes by assignee, epic or priority.","N","P","X","GHES: column limits are visual only; group-by instead of lanes."],
+["j17","Boards and planning","Sprint start, complete and carry-over","Formally start and close a sprint, with unfinished work moved to the next sprint or backlog automatically.","N","P","P",""],
+["j18","Boards and planning","Story points","Estimate relative effort in points and use it for sprint planning and velocity.","N","P","N",""],
+["j19","Boards and planning","Team capacity planning","Enter each person's available days per sprint and see whether the planned work fits.","N","X","X",""],
+["j20","Boards and planning","Roadmap or Gantt","Show epics and issues on a timeline with start and end dates and the dependencies between them.","N","P","N","OpenProject has a strong Gantt view."],
+["j21","Boards and planning","Portfolio planning across teams","Plan many teams and projects in one view (Advanced Roadmaps / Plans), including cross-team dependencies and scenarios.","P","X","P","ADO: Delivery Plans. GHES: one Project per organisation."],
+["j22","Search and reports","Advanced query language (JQL)","Write complex searches such as 'project = X AND status changed to Done during (-2w, now())' and save them.","N","P","P",""],
+["j23","Search and reports","Velocity, burndown, cumulative flow","Standard agile charts showing sprint progress, team throughput and where work piles up.","N","P","P","GHES: burn-up in Insights only."],
+["j24","Search and reports","Dashboards with gadgets","Build team or management dashboards from widgets: filter results, charts, pie charts, sprint health.","N","X","P",""],
+["j25","Search and reports","Excel or Power BI reporting","Export issue data to Excel or connect BI tools for management reporting.","N","P","P","ADO: Excel add-in and OData Analytics."],
+["j26","Time tracking","Time logging and worklogs","Record hours spent on an issue with date and comment, and compare against the original estimate.","P","X","N","ADO: Completed Work field, no per-entry log."],
+["j27","Time tracking","Timesheets and cost reports","Produce timesheets per person or project, often for billing or capitalisation (typically done with Tempo).","A","X","P",""],
+["j28","Integration","Link commits, branches and PRs","See the code changes, branches and pull requests for an issue directly on it.","N","N","P",""],
+["j29","Integration","Automation rules","No-code rules such as 'when all sub-tasks are done, close the parent' or 'assign new bugs to the component lead'.","P","P","P","GHES: built-in workflows plus GitHub Actions."],
+["j30","Integration","REST API and webhooks","Let other systems read and write issues and receive events when something changes.","N","N","N",""],
+["j31","Integration","Create issues from email","Send a mail to a project address and get an issue created or a comment added.","X","X","N",""],
+["j32","Integration","Test case management","Write test cases, run test cycles and link results to stories and bugs (Xray or Zephyr in Jira).","A","X","X","ADO: Test Plans, extra licence."],
+["j33","Security","Project permission schemes","Fine-grained roles per project: who can browse, create, edit, transition, delete or administer.","N","P","N",""],
+["j34","Security","Issue-level security","Hide individual issues (security bugs, HR cases) from users who can otherwise see the project.","P","X","X",""],
+["j35","Usage","Business teams","Non-engineering teams (HR, finance, marketing, legal) tracking their own work in simple projects.","P","P","N","GHES: every user needs a licence and repo access."],
+]},
+{id:"jsm", name:"Jira Service Management", sub:"Service desk and ITSM", dc:"Data Center read-only from 28 Mar 2029", oss:"Zammad / GLPI", feats:[
+["s1","Channels","Customer portal","A web page where employees or customers raise requests, see status and reply, without a full licence.","X","X","N",""],
+["s2","Channels","Email to ticket","Requests sent to a support mailbox become tickets, and replies thread back into them.","X","X","N",""],
+["s3","Operations","Queues and SLAs","Agents work from prioritised queues, with response and resolution targets and breach warnings.","X","X","N",""],
+["s4","Operations","Request types and forms","Each request type (new laptop, access request) has its own form so the right details are captured up front.","P","P","N",""],
+["s5","Operations","Approvals","Requests wait for a manager or change board to approve before work begins.","X","X","P",""],
+["s6","ITIL","Incident, problem and change","ITIL processes for outages, root-cause investigation and controlled changes with risk assessment.","X","X","P","GLPI and iTop cover ITIL more fully than Zammad."],
+["s7","ITIL","Assets and CMDB","Track hardware, software and services (formerly Insight) and link them to tickets to see impact.","X","X","P","GLPI includes asset inventory."],
+["s8","Knowledge","Customer knowledge base","Self-service articles suggested in the portal so users can solve problems before raising a ticket.","X","X","N",""],
+["s9","Knowledge","Satisfaction surveys","Ask the requester to rate the service when a ticket is resolved.","X","X","N",""],
+["s10","Integration","Escalate ticket to dev work","Link a support ticket to a development issue and keep both in sync.","P","P","P",""],
+["s11","Operations","On-call and alerting","Page the on-call engineer when monitoring raises an alert (Opsgenie, being retired by Atlassian).","X","X","X","Usually a separate tool such as PagerDuty or Grafana OnCall."],
+]},
+{id:"confluence", name:"Confluence", sub:"Wiki and documentation", dc:"Data Center read-only from 28 Mar 2029", oss:"XWiki", feats:[
+["c1","Structure","Spaces and page tree","Group documentation into spaces per team or product, with pages nested in a navigable tree.","N","P","N","GHES: one wiki per repository."],
+["c2","Editing","WYSIWYG editor","Edit pages visually like a word processor, without writing Markdown.","P","X","N",""],
+["c3","Editing","Real-time co-editing","Several people edit the same page at the same time and see each other's changes live.","X","X","N",""],
+["c4","Editing","Page templates","Start pages from a template such as meeting notes, decision log, retrospective or requirements.","P","X","N",""],
+["c5","Editing","Macros","Embed dynamic content: table of contents, live Jira issue lists, status lozenges, diagrams, charts.","P","P","N",""],
+["c6","Collaboration","Page and inline comments","Comment at the bottom of a page or on a highlighted sentence, with threads and resolve.","P","X","N",""],
+["c7","Collaboration","Page restrictions","Limit who can view or edit a single page or branch, separately from space permissions.","P","X","N",""],
+["c8","Content","History and compare","See every version of a page, compare two versions and restore an older one.","N","N","N",""],
+["c9","Content","Attachments and Office previews","Attach files to pages and preview Word, Excel, PowerPoint and PDF inline.","P","P","N",""],
+["c10","Content","Full-text search","Search all pages and attachment contents, filtered by space, label or author.","N","P","N",""],
+["c11","Content","Export to PDF or Word","Export a page or whole space to share outside the tool.","P","X","N",""],
+["c12","Migration","Confluence importer","Bring existing spaces, pages, attachments and history across automatically.","X","X","N","XWiki has a Confluence migrator. SharePoint is another common target."],
+]},
+{id:"bitbucket", name:"Bitbucket", sub:"Git hosting", dc:"Continues after 2029 with dual DC + Cloud licence", oss:"Gitea / Forgejo", feats:[
+["g1","Code","Git hosting, forks, LFS","Host Git repositories, fork them and store large binary files with Git LFS.","N","N","N",""],
+["g2","Review","Pull requests and reviews","Propose changes, review line by line, discuss and approve before merging.","N","N","N",""],
+["g3","Review","Branch permissions and merge checks","Protect branches and require approvals, passing builds or resolved tasks before merge.","N","N","N",""],
+["g4","Review","Code owners","Automatically request reviews from the owners of the files that changed.","P","N","N",""],
+["g5","Code","Code search","Search code across all repositories.","P","N","P",""],
+["g6","Code","Mirrors for remote sites","Read-only mirrors near remote offices so clones and fetches are fast (Smart Mirroring).","X","P","P","GHES: repository caching."],
+["g7","Security","Secret and code scanning","Find leaked secrets, vulnerable dependencies and security bugs in code automatically.","X","A","X","GHES: GitHub Advanced Security, extra licence."],
+]},
+{id:"bamboo", name:"Bamboo", sub:"CI/CD", dc:"Data Center read-only from 28 Mar 2029", oss:"Jenkins", feats:[
+["b1","Build","Pipelines as code","Keep the build definition in the repository (Bamboo Specs) so it is versioned with the code.","N","N","N",""],
+["b2","Build","Self-hosted agents","Run builds on your own servers, including Windows, Linux and macOS machines.","N","N","N",""],
+["b3","Build","Parallel and matrix builds","Run many jobs at once, for example the same tests across several OS or language versions.","N","N","N",""],
+["b4","Build","Test result reporting","See which tests failed per build and how results trend over time.","N","P","N",""],
+["b5","Deploy","Deployment projects and environments","Promote a build through environments such as dev, test and production with a history per environment.","N","N","P",""],
+["b6","Deploy","Deployment approvals","Require a person to approve before deploying to a protected environment.","N","N","P",""],
+["b7","Deploy","Secrets management","Store passwords and keys securely and inject them into builds without exposing them in logs.","N","N","P",""],
+["b8","Migration","Automated plan conversion","Convert existing Bamboo plans into the new pipeline format with a tool instead of by hand.","X","N","X","GitHub Actions Importer converts Bamboo plans."],
+]},
+{id:"crowd", name:"Crowd", sub:"Users and single sign-on", dc:"Data Center read-only from 28 Mar 2029", oss:"Keycloak", feats:[
+["u1","Identity","LDAP or Active Directory","Use existing company accounts and groups from your directory.","N","N","N",""],
+["u2","Identity","SAML single sign-on","Log in once with the company identity provider and access every tool.","P","N","N","ADO Server: Windows auth, or SAML via AD FS."],
+["u3","Identity","Multi-factor authentication","Require a second factor such as an authenticator app at login.","P","P","N","Usually handled by your identity provider."],
+["u4","Identity","One directory for many apps","A central user store that several applications authenticate against.","X","X","N","Most companies replace Crowd with Entra ID or AD FS."],
+]},
+{id:"apps", name:"Marketplace apps", sub:"Tempo, ScriptRunner, Xray…", dc:"New DC app sales stopped 30 Mar 2026; apps end with DC", oss:"Various", feats:[
+["m1","Popular apps","Tempo Timesheets","Time tracking, timesheets, approvals and cost reports on top of Jira.","P","X","N","OpenProject has time and cost reporting built in."],
+["m2","Popular apps","ScriptRunner","Custom scripts for workflows, listeners, scheduled jobs and advanced JQL functions.","P","P","P","GHES: GitHub Actions. ADO: service hooks and extensions."],
+["m3","Popular apps","Xray or Zephyr","Test cases, test plans and executions linked to requirements and defects.","A","X","P","ADO: Test Plans, extra licence. OSS option: Kiwi TCMS."],
+["m4","Popular apps","Structure or BigPicture","Portfolio views, custom hierarchies, Gantt charts and resource planning across projects.","P","X","P",""],
+["m5","Popular apps","eazyBI","Advanced reports and BI dashboards built from Jira data.","N","X","P","ADO: Power BI through Analytics OData."],
+["m6","Popular apps","draw.io or Gliffy","Draw diagrams inside wiki pages and issues.","P","P","N","GHES and ADO render Mermaid diagrams in Markdown."],
+["m7","Popular apps","Jira Misc Workflow Extensions","Extra workflow conditions, validators and post-functions.","P","X","P",""],
+["m8","Popular apps","Portfolio or Advanced Roadmaps","Plans across teams with capacity, releases and scenarios (built into Jira DC).","P","X","P",""],
+]},
+];
+const EXAMPLE = {tools:["jira","confluence"], targets:["ado","gh","oss"], imp:{j1:3,j2:3,j4:3,j10:3,j11:2,j14:3,j15:2,j18:2,j20:2,j22:3,j23:2,j26:1,j28:3,j29:2,j33:3,c1:3,c2:2,c5:1,c8:3,c10:3,c12:2}};
+
+function lsGet(){ try{ return localStorage.getItem("aep-state"); }catch(e){ return null; } }
+function load(){ try{ const s = lsGet(); const o = s && JSON.parse(s); return o && o.targets ? o : null; }catch(e){ return null; } }
+let state = load() || structuredClone(EXAMPLE);
+let isExample = !load();
+let analysed = false, summary = "";
+function save(){ isExample = false; try{ localStorage.setItem("aep-state", JSON.stringify(state)); }catch(e){} }
+function changed(){ save(); if(analysed) $("#stale").hidden = false; }
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rating = (f,k) => k==="dc" ? "N" : f[TK[k].col];
+const tname = (k,t) => k==="oss" && t ? `${t.oss} (open source)` : TK[k].name;
+const pct = x => x==null ? "–" : Math.round(x*100)+"%";
+
+function cards(el, list, chosen, key){
+  $(el).innerHTML = list.map(t => `<div class="tool"><input type="checkbox" id="${key}-${t.id||t.k}" value="${t.id||t.k}" ${chosen.includes(t.id||t.k)?"checked":""}>
+    <label for="${key}-${t.id||t.k}"><span class="t">${t.name}</span><span class="s">${esc(t.sub)}</span>${t.dc?`<span class="dc ${t.id==="bitbucket"?"ok":""}">${esc(t.dc)}</span>`:""}</label></div>`).join("");
+}
+function renderPickers(){ cards("#tools", TOOLS, state.tools, "tool"); cards("#targets", TARGETS, state.targets, "target"); }
+$("#tools").onchange = e => { const v=e.target.value; state.tools = e.target.checked ? [...state.tools,v] : state.tools.filter(x=>x!==v); changed(); renderFeatures(); };
+$("#targets").onchange = e => { const v=e.target.value; state.targets = e.target.checked ? [...state.targets,v] : state.targets.filter(x=>x!==v); changed(); renderFeatures(); };
+
+function renderFeatures(){
+  const sel = TOOLS.filter(t => state.tools.includes(t.id));
+  const tg = TARGETS.filter(t => state.targets.includes(t.k) && t.k!=="dc");
+  if(!sel.length){ $("#features").innerHTML = `<div class="empty">Pick at least one product in Step 1 to see its features.</div>`; return; }
+  $("#features").innerHTML = (isExample ? `<div class="sample" id="sample">Example answers are loaded so you can see how it works. Use “Clear answers” to start with your own.</div>` : "") +
+  sel.map(t => {
+    let cat = "", rows = "";
+    for(const f of t.feats){
+      const [id,c,name,d,,,,note] = f;
+      if(c!==cat){ rows += `<div class="cat">${c}</div>`; cat=c; }
+      const v = state.imp[id]||0;
+      rows += `<div class="row ${v?"":"unused"}">
+        <div><div class="f">${esc(name)}</div><div class="d">${esc(d)}</div>
+          ${tg.length?`<div class="ratings">${tg.map(x=>`<span class="pill r-${rating(f,x.k)}"><i>${x.k==="oss"?esc(t.oss):x.k==="ado"?"Azure DevOps":"GitHub ES"}</i>${RL[rating(f,x.k)]}</span>`).join("")}</div>`:""}
+          ${note?`<div class="note">${esc(note)}</div>`:""}</div>
+        <div class="imp" role="radiogroup" aria-label="Importance of ${esc(name)}">${IMP.map((lab,i)=>`<input type="radio" name="imp-${id}" id="imp-${id}-${i}" value="${i}" ${v===i?"checked":""}><label for="imp-${id}-${i}">${lab}</label>`).join("")}</div>
+      </div>`;
+    }
+    return `<div class="group"><header><h3>${t.name}</h3><span class="oss">${esc(t.dc)}</span></header>${rows}</div>`;
+  }).join("");
+}
+$("#features").addEventListener("change", e => {
+  const m = e.target.name && e.target.name.match(/^imp-(.+)$/); if(!m) return;
+  const v = +e.target.value; if(v) state.imp[m[1]] = v; else delete state.imp[m[1]];
+  e.target.closest(".row").classList.toggle("unused", !v);
+  $("#sample")?.remove(); changed();
+});
+
+function calc(feats, k){
+  let got=0, max=0; const gaps=[], partial=[];
+  for(const f of feats){
+    const w = state.imp[f[0]]||0; if(!w) continue;
+    const r = rating(f,k); got += w*RS[r]; max += w;
+    if(w===3 && r==="X") gaps.push(f); else if(w===3 && r!=="N") partial.push(f);
+  }
+  return {pct: max ? got/max : null, gaps, partial};
+}
+const better = (a,b) => (a.gaps.length-b.gaps.length) || (b.pct-a.pct);
+
+function analyse(){
+  const sel = TOOLS.filter(t => state.tools.includes(t.id));
+  const tg = TARGETS.filter(t => state.targets.includes(t.k));
+  const dest = tg.filter(t => t.k!=="dc");
+  const all = sel.flatMap(t => t.feats.map(f => Object.assign(f, {tool:t})));
+  const used = all.filter(f => state.imp[f[0]]);
+  if(!sel.length) return msg("Pick at least one product in Step 1.");
+  if(!dest.length) return msg("Pick at least one platform to move to in Step 2.");
+  if(!used.length) return msg("Mark the importance of at least one feature in Step 3.");
+  msg("");
+
+  const tot = Object.fromEntries(tg.map(t => [t.k, calc(all,t.k)]));
+  const rank = dest.map(t=>t.k).sort((a,b) => better(tot[a],tot[b]));
+  const best = rank[0], B = tot[best];
+
+  const per = sel.map(t => {
+    const r = Object.fromEntries(tg.map(x => [x.k, calc(t.feats,x.k)]));
+    const has = r[dest[0].k].pct != null;
+    const win = has ? dest.map(x=>x.k).sort((a,b)=>better(r[a],r[b]))[0] : null;
+    return {t, r, win};
+  });
+  const wins = per.filter(p=>p.win);
+  const mixed = new Set(wins.map(p=>p.win)).size > 1;
+
+  const verdict = B.gaps.length===0 && B.pct>=.8 ? "Strong fit" : B.gaps.length===0 && B.pct>=.6 ? "Workable, with some workarounds" : "Fits, but with significant gaps";
+  const order = [...rank, ...(tg.some(t=>t.k==="dc")?["dc"]:[])];
+  $("#verdict").innerHTML = `<div class="label">Recommendation</div>
+    <h2>${TK[best].name}</h2>
+    <p>${verdict}. It covers ${pct(B.pct)} of what you use across ${used.length} feature${used.length>1?"s":""}${B.gaps.length?`, but ${B.gaps.length} must-have${B.gaps.length>1?"s are":" is"} missing`:", with no must-have gaps"}.
+    ${mixed ? ` Your products fit best on different platforms: ${wins.map(p=>`${p.t.name} → ${tname(p.win,p.t)}`).join(", ")}. Weigh running one platform against the better fit of a mix.` : ""}</p>
+    <div class="bars">${order.map(k => `<div class="bar ${k===best?"best":k==="dc"?"base":""}"><div class="top"><span>${TK[k].name}${k==="dc"?" (baseline, ends 2029)":""}</span><b>${pct(tot[k].pct)}</b></div>
+      <div class="track"><div class="fill" style="width:${Math.round(tot[k].pct*100)}%"></div></div>
+      <div class="meta">${k==="dc"?"What you have today. Not purchasable for new customers and read-only from 28 Mar 2029.":`${tot[k].gaps.length?`<span class="g">${tot[k].gaps.length} must-have gap${tot[k].gaps.length>1?"s":""}</span>`:"No must-have gaps"} · ${tot[k].partial.length} must-have only partly covered`}</div></div>`).join("")}</div>`;
+
+  $("#matrix").innerHTML = `<table class="grid"><thead><tr><th>Product</th>${tg.map(t=>`<th>${t.name}</th>`).join("")}<th>Best fit</th></tr></thead><tbody>
+    ${per.map(p => `<tr><td>${p.t.name}</td>${tg.map(t=>`<td class="num ${p.win===t.k?"win":""}">${pct(p.r[t.k].pct)}${p.r[t.k].gaps.length?` <span class="pill r-X">${p.r[t.k].gaps.length} gap</span>`:""}</td>`).join("")}<td>${p.win?tname(p.win,p.t):`<span class="muted">No features marked</span>`}</td></tr>`).join("")}
+    <tr class="total"><td>Overall</td>${tg.map(t=>`<td class="num ${t.k===best?"win":""}">${pct(tot[t.k].pct)}</td>`).join("")}<td>${TK[best].name}</td></tr></tbody></table>`;
+
+  const li = (f,cls) => `<li><b>${esc(f[2])}</b> <span class="muted">(${f.tool.name})</span> <span class="pill ${cls}">${RL[cls.slice(2)]}</span>${f[7]?`<br><span class="muted">${esc(f[7])}</span>`:""}</li>`;
+  $("#gaps").innerHTML = rank.map(k => { const x = tot[k], n = x.gaps.length + x.partial.length;
+    return `<details ${k===best?"open":""}><summary>${TK[k].name} <span>${x.gaps.length} missing · ${x.partial.length} partial</span></summary>
+      ${n ? `<ul class="gaps">${x.gaps.map(f=>li(f,"r-X")).join("")}${x.partial.map(f=>li(f,"r-"+rating(f,k))).join("")}</ul>` : `<p class="muted">Every must-have is built in.</p>`}</details>`; }).join("");
+
+  $("#mapping").innerHTML = `<table class="grid"><thead><tr><th>Feature</th><th>Importance</th>${dest.map(t=>`<th>${t.name}</th>`).join("")}</tr></thead><tbody>
+    ${used.sort((a,b)=>state.imp[b[0]]-state.imp[a[0]]).map(f => `<tr><td><b>${esc(f[2])}</b><br><span class="muted">${f.tool.name}</span></td><td>${IMP[state.imp[f[0]]]}</td>${dest.map(t=>`<td><span class="pill r-${rating(f,t.k)}">${RL[rating(f,t.k)]}</span></td>`).join("")}</tr>`).join("")}</tbody></table>`;
+
+  summary = [`Atlassian Exit Planner: analysis`, `Products today: ${sel.map(t=>t.name).join(", ")}`, `Platforms compared: ${tg.map(t=>t.name).join(", ")}`, `Features in use: ${used.length}`, ``,
+    `Recommendation: ${TK[best].name} (${pct(B.pct)} fit, ${B.gaps.length} must-have gaps)`, ``,
+    `Overall fit:`, ...order.map(k => `- ${TK[k].name}: ${pct(tot[k].pct)}${k==="dc"?" (baseline, ends 28 Mar 2029)":`, ${tot[k].gaps.length} must-have gaps`}`), ``,
+    `Best fit per product:`, ...wins.map(p => `- ${p.t.name} -> ${tname(p.win,p.t)} (${pct(p.r[p.win].pct)})`), ``,
+    `Must-have gaps on ${TK[best].name}:`, ...(B.gaps.length ? B.gaps.map(f=>`- ${f[2]} (${f.tool.name})`) : ["- none"]),
+    `Must-haves only partly covered:`, ...(B.partial.length ? B.partial.map(f=>`- ${f[2]} (${f.tool.name})`) : ["- none"])].join("\n");
+
+  analysed = true; $("#stale").hidden = true; $("#results").hidden = false;
+  $("#results").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
+}
+function msg(t){ $("#runmsg").textContent = t; }
+
+$("#run").onclick = analyse;
+$("#copy").onclick = () => {
+  const done = () => $("#copymsg").textContent = "Summary copied. Paste it into an email or document.";
+  const fallback = () => { let ta=$("#copyfallback"); if(!ta){ ta=document.createElement("textarea"); ta.id="copyfallback"; ta.readOnly=true; $("#results").append(ta); } ta.value=summary; ta.select(); $("#copymsg").textContent="Copying was blocked. Select the text below and copy it."; };
+  try{ navigator.clipboard.writeText(summary).then(done, fallback); }catch(e){ fallback(); }
+};
+$("#reset").onclick = () => { state.imp = {}; changed(); renderFeatures(); };
+$("#example").onclick = () => { state = structuredClone(EXAMPLE); changed(); isExample = true; renderPickers(); renderFeatures(); };
+
+renderPickers(); renderFeatures();
+</script>
+</body>
+</html>
