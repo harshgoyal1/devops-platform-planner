@@ -42,6 +42,7 @@
   --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth;scroll-padding-top:80px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
 body{background:var(--ground);color:var(--ink);font:15px/1.55 var(--body);padding-inline:16px;padding-block:0 120px;-webkit-font-smoothing:antialiased}
@@ -742,7 +743,7 @@ $("#copy").onclick = () => {
 $("#reset").onclick = () => { state.imp = {}; changed(); renderFeatures(); };
 $("#example").onclick = () => { state = structuredClone(EXAMPLE); openGroups.add(state.tools[0]); changed(); isExample = true; renderPickers(); renderFeatures(); };
 
-function demo(){ if(location.hash!=="#demo") return; state = structuredClone(EXAMPLE); isExample = true; renderPickers(); renderFeatures(); analyse(false); $("#s4").scrollIntoView({block:"start", behavior:"instant"}); }
+function demo(){ if(location.hash!=="#demo") return; state = structuredClone(EXAMPLE); isExample = true; openGroups.clear(); renderPickers(); renderFeatures(); analyse(false); $("#s4").scrollIntoView({block:"start", behavior:"instant"}); }
 addEventListener("hashchange", demo);
 renderPickers(); renderFeatures(); demo();
 </script>
